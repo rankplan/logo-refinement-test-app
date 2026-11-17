@@ -148,10 +148,26 @@
   .tile-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px 10px}
   .tile-head .t-name{font-weight:800;font-size:.97rem;line-height:1.25}
   .tile-head .t-desc{color:var(--ink-3);font-size:.8rem;margin-top:1px}
-  .stage{background:var(--stage);border-top:1px solid var(--stage-line);border-bottom:1px solid var(--stage-line);min-height:132px;display:flex;align-items:center;justify-content:center;padding:26px 20px;color:#000}
-  .mark-slot{display:flex;align-items:center;justify-content:center;max-width:100%;width:100%}
-  .mark-slot svg{width:100%;max-width:300px;height:auto;max-height:84px;display:block}
-  .mark-slot img{max-width:300px;max-height:84px;width:auto;height:auto;display:block;object-fit:contain}
+  .stage{background:var(--stage);border-top:1px solid var(--stage-line);border-bottom:1px solid var(--stage-line);height:150px;display:flex;align-items:center;justify-content:center;padding:18px 20px;color:#000;overflow:hidden}
+  .mark-slot{display:flex;align-items:center;justify-content:center;max-width:100%;width:100%;height:100%;overflow:hidden}
+  .mark-slot svg{width:100%;height:100%;max-width:320px;max-height:104px;display:block}
+  .mark-slot img{max-width:320px;max-height:104px;width:auto;height:auto;display:block;object-fit:contain}
+  .mark-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:100%;max-width:100%;overflow:hidden}
+  .mark-inner{display:flex;align-items:center;justify-content:center;max-width:100%;max-height:100%}
+  .mark-inner svg{width:100%;height:100%}
+  .variant-minimal .mark-inner{transform:scaleX(.982)}
+  .variant-precision .mark-inner{transform:scaleX(1.004);filter:contrast(1.06)}
+  .variant-momentum .mark-inner{transform:skewX(-5deg)}
+  .variant-minimal .text-mark{letter-spacing:.02em;font-weight:700}
+  .variant-precision .text-mark{letter-spacing:.1em}
+  .fx-minimal .mark-inner{filter:drop-shadow(0 1px 1px rgba(0,0,0,.20))}
+  .variant-precision.fx-minimal .mark-inner{filter:contrast(1.06) drop-shadow(0 1px 1px rgba(0,0,0,.20))}
+  .fx-moderate .mark-inner{filter:drop-shadow(0 3px 4px rgba(0,0,0,.28))}
+  .variant-precision.fx-moderate .mark-inner{filter:contrast(1.06) drop-shadow(0 3px 4px rgba(0,0,0,.28))}
+  .fx-full .mark-inner{filter:drop-shadow(0 5px 9px rgba(0,0,0,.35)) saturate(1.15)}
+  .variant-precision.fx-full .mark-inner{filter:contrast(1.06) drop-shadow(0 5px 9px rgba(0,0,0,.35)) saturate(1.15)}
+  .custom-tag{display:none;font-size:.72rem;font-weight:800;color:var(--good)}
+  .custom-tag.show{display:inline}
   .text-mark{font-weight:800;letter-spacing:.06em;font-size:clamp(1.3rem,3.2vw,1.9rem);color:#000;text-transform:uppercase;line-height:1;white-space:nowrap}
   .text-mark.empty{color:#9a9c95;font-size:1rem;letter-spacing:0;text-transform:none;font-weight:600}
   .sizes{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end;padding:12px 14px 4px;background:var(--surface)}
@@ -160,6 +176,8 @@
   .size-box .inner{display:flex;align-items:center;justify-content:flex-start}
   .size-box.s16 .inner{height:16px}
   .size-box.s32 .inner{height:32px}
+  .size-box .inner .mark-wrap{height:100%}
+  .size-box .inner .mark-inner{height:100%}
   .size-box.s16 .inner svg{height:16px;width:auto;max-width:170px}
   .size-box.s32 .inner svg{height:32px;width:auto;max-width:220px}
   .size-box.s16 .inner img{height:16px;width:auto;max-width:170px;object-fit:contain}
@@ -181,6 +199,41 @@
   .star:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
   .verdict{width:100%;border:1px solid var(--line-strong);border-radius:var(--radius-input);padding:8px 10px;font-size:.9rem;background:var(--surface)}
   .verdict:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+  .tile-load{margin-bottom:10px}
+  .tile-load>button{appearance:none;border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:700;font-size:.82rem;cursor:pointer;min-height:36px}
+  .tile-load>button:hover{border-color:var(--accent);color:var(--accent)}
+  .paste-box{display:none;margin-top:8px}
+  .paste-box.show{display:block}
+  .paste-box textarea{width:100%;min-height:74px;border:1px solid var(--line-strong);border-radius:var(--radius-input);padding:8px 10px;font-family:"JetBrains Mono",monospace;font-size:.74rem;background:var(--surface);resize:vertical}
+  .paste-box .paste-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}
+  .paste-box .paste-actions button{appearance:none;border:1px solid var(--ink);background:var(--ink);color:var(--bg);border-radius:999px;padding:5px 12px;font-weight:700;font-size:.8rem;cursor:pointer;min-height:34px}
+  .paste-box .paste-actions button.ghost{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+  .paste-status{font-size:.78rem;color:var(--ink-3);margin-top:6px}
+  .check-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .check-opt{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--line-strong);border-radius:10px;padding:10px 11px;min-height:48px;cursor:pointer;background:var(--surface)}
+  .check-opt input{flex:none;width:18px;height:18px;min-height:18px;margin:2px 0 0;accent-color:var(--accent);cursor:pointer}
+  .check-opt span b{font-size:.88rem;line-height:1.25;display:block}
+  .check-opt span small{color:var(--ink-3);font-size:.76rem;line-height:1.3;display:block}
+  .check-opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
+  .effect-list{display:grid;gap:8px}
+  .effect-opt{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--line-strong);border-radius:10px;padding:10px 11px;cursor:pointer;background:var(--surface)}
+  .effect-opt input{flex:none;width:18px;height:18px;min-height:18px;margin:2px 0 0;accent-color:var(--accent);cursor:pointer}
+  .effect-opt span b{font-size:.88rem;line-height:1.25;display:block}
+  .effect-opt span small{color:var(--ink-3);font-size:.76rem;line-height:1.3;display:block}
+  .effect-opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
+  .gen-row{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:8px}
+  .btn-gen{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;font-weight:800;border-radius:999px;padding:7px 14px;cursor:pointer;min-height:38px;font-size:.86rem}
+  .btn-gen:disabled{opacity:.55;cursor:wait}
+  .btn-dl{appearance:none;border:1px solid var(--ink);background:var(--ink);color:var(--bg);font-weight:700;border-radius:999px;padding:6px 12px;cursor:pointer;min-height:36px;font-size:.82rem}
+  .btn-dl[hidden]{display:none}
+  .gen-status{font-size:.8rem;color:var(--ink-2);margin:0 0 8px;line-height:1.45}
+  .gen-status.error{color:#b91c1c;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:8px 10px;font-weight:600}
+  @media(prefers-color-scheme:dark){.gen-status.error{color:#fca5a5;background:#2b1212;border-color:#7f1d1d}}
+  .key-note{font-size:.8rem;color:var(--ink-3);margin-top:6px;line-height:1.45}
+  .api-footnote{margin-top:14px;font-size:.8rem;color:var(--ink-3);line-height:1.55;border-top:1px solid var(--line);padding-top:12px}
+  .run-settings{margin:0 0 12px;font-size:.9rem;background:var(--surface);border:1px solid var(--accent);border-radius:10px;padding:10px 13px;line-height:1.5}
+  .run-settings strong{color:var(--accent-ink)}
+  @media(prefers-color-scheme:dark){.run-settings strong{color:var(--accent)}}
 
   .checklist{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-card);box-shadow:var(--shadow);padding:16px}
   .checklist ul{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:10px}
@@ -246,6 +299,16 @@
       <h2 id="source-h">Logo source</h2>
       <p class="sub">Start with the real mark. Vector input is what makes refinement testable.</p>
 
+      <div class="field" style="margin-top:0">
+        <label for="recraftKey">Recraft API key</label>
+        <input type="password" id="recraftKey" placeholder="Paste your Recraft API key" autocomplete="off" spellcheck="false">
+        <p class="key-note">Stored only in this browser (localStorage) and sent only to Recraft's API at external.api.recraft.ai. Never sent anywhere else.</p>
+        <div class="gen-row" style="margin-top:8px">
+          <button type="button" class="btn secondary small" id="testKeyBtn">Test key</button>
+          <span class="key-note" id="testKeyStatus" style="margin:0" aria-live="polite"></span>
+        </div>
+      </div>
+
       <div class="dz-wrap">
         <div class="dropzone" id="dropzone" aria-label="Upload a logo file, SVG preferred">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
@@ -289,15 +352,78 @@
         </div>
       </fieldset>
 
+      <fieldset class="field">
+        <legend>Output type</legend>
+        <div class="check-list" id="outputTypeList">
+          <label class="check-opt">
+            <input type="checkbox" name="outputType" value="Wordmark" checked>
+            <span><b>Wordmark</b><small>Text only outputs</small></span>
+          </label>
+          <label class="check-opt">
+            <input type="checkbox" name="outputType" value="Lettermark">
+            <span><b>Lettermark</b><small>Initials or monogram outputs</small></span>
+          </label>
+          <label class="check-opt">
+            <input type="checkbox" name="outputType" value="Symbol">
+            <span><b>Symbol</b><small>Graphic mark only outputs</small></span>
+          </label>
+          <label class="check-opt">
+            <input type="checkbox" name="outputType" value="Combination">
+            <span><b>Combination</b><small>Symbol plus wordmark outputs</small></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Effects level</legend>
+        <div class="effect-list" id="effectsList">
+          <label class="effect-opt">
+            <input type="radio" name="effectsLevel" value="pure" checked>
+            <span><b>Pure vector graphic</b><small>Flat shapes only. No gradients, shadows or effects of any kind.</small></span>
+          </label>
+          <label class="effect-opt">
+            <input type="radio" name="effectsLevel" value="minimal">
+            <span><b>Minimal effects</b><small>Flat shapes with at most one subtle shadow or highlight.</small></span>
+          </label>
+          <label class="effect-opt">
+            <input type="radio" name="effectsLevel" value="moderate">
+            <span><b>Moderate effects</b><small>Soft gradients and shadows allowed, edges stay vector clean.</small></span>
+          </label>
+          <label class="effect-opt">
+            <input type="radio" name="effectsLevel" value="full">
+            <span><b>Full effects</b><small>Gradients, shadows and highlights allowed, richest treatment.</small></span>
+          </label>
+        </div>
+      </fieldset>
+
       <div class="field">
         <label for="notesField">Notes for this test</label>
         <textarea id="notesField" placeholder="For example: watch the two A letterforms and the final N at 16px."></textarea>
       </div>
 
+      <fieldset class="field">
+        <legend>Output format</legend>
+        <div class="effect-list" id="formatList">
+          <label class="effect-opt">
+            <input type="radio" name="outputFormat" value="svg" checked>
+            <span><b>SVG (vector)</b><small>Recraft vector model, editable paths. The default, and the best fit for this app.</small></span>
+          </label>
+          <label class="effect-opt">
+            <input type="radio" name="outputFormat" value="png">
+            <span><b>PNG</b><small>Recraft raster model, PNG image result.</small></span>
+          </label>
+          <label class="effect-opt">
+            <input type="radio" name="outputFormat" value="jpg">
+            <span><b>JPG</b><small>Recraft raster model, JPG image result.</small></span>
+          </label>
+        </div>
+      </fieldset>
+
       <div class="form-actions">
         <button type="button" class="btn" id="updateBtn">Update draft previews</button>
-        <span class="hint">Runs in this browser only. No file leaves the page.</span>
+        <span class="hint">Previews run in this browser only. Generation sends your logo and prompt to Recraft with your key.</span>
       </div>
+      <p class="api-footnote">Generation runs from your browser with your own Recraft key. Costs are Recraft's, about $0.08 per vector generation. Generated marks are drafts for exploration, never production logos.</p>
     </aside>
 
     <!-- RIGHT: output variants -->
@@ -305,10 +431,11 @@
       <div class="output-head">
         <div>
           <h2 id="output-h">Output variants</h2>
-          <p class="sub" style="margin:0">Four tiles, one source. Variant tiles are draft slots holding the uploaded mark until a real generation step is wired in.</p>
+          <p class="sub" style="margin:0">Four tiles, one source. Each refinement tile applies its treatment live to your mark, and you can load a generated result SVG into any refinement tile to judge it at real sizes.</p>
         </div>
-        <span class="badge draft">Draft slots, not generated</span>
+        <span class="badge draft">Live previews</span>
       </div>
+      <p class="run-settings" id="runSettings" aria-live="polite"></p>
 
       <div class="output-layout">
         <div class="tiles" id="tiles">
@@ -342,6 +469,22 @@
             </div>
             <p class="sizes-note">Favicon scale check: counters should stay open, nothing should fill in.</p>
             <div class="tile-foot">
+              <div class="tile-load" data-load>
+                <div class="gen-row">
+                  <button type="button" class="btn-gen" data-generate>Generate with Recraft</button>
+                  <button type="button" class="btn-dl" data-download hidden>Download SVG</button>
+                </div>
+                <p class="gen-status" data-gen-status aria-live="polite"></p>
+                <button type="button" data-load-toggle>Load a result SVG into this tile</button> <span class="custom-tag" data-custom-tag>Result loaded</span>
+                <div class="paste-box" data-paste-box>
+                  <textarea data-paste-input placeholder="Paste the refined SVG markup from your model here, then apply. It replaces the live preview in this tile only." aria-label="Paste refined SVG for Minimal refinement"></textarea>
+                  <div class="paste-actions">
+                    <button type="button" data-paste-apply>Apply to this tile</button>
+                    <button type="button" class="ghost" data-paste-reset>Back to live preview</button>
+                  </div>
+                  <div class="paste-status" data-paste-status></div>
+                </div>
+              </div>
               <div class="rating" data-rating aria-label="Rating for Minimal refinement"></div>
               <input type="text" class="verdict" data-verdict placeholder="One-line verdict, for example: safest, cue may be too weak" aria-label="Verdict for Minimal refinement">
             </div>
@@ -359,6 +502,22 @@
             </div>
             <p class="sizes-note">Favicon scale check: sharp details are the first thing lost at this size.</p>
             <div class="tile-foot">
+              <div class="tile-load" data-load>
+                <div class="gen-row">
+                  <button type="button" class="btn-gen" data-generate>Generate with Recraft</button>
+                  <button type="button" class="btn-dl" data-download hidden>Download SVG</button>
+                </div>
+                <p class="gen-status" data-gen-status aria-live="polite"></p>
+                <button type="button" data-load-toggle>Load a result SVG into this tile</button> <span class="custom-tag" data-custom-tag>Result loaded</span>
+                <div class="paste-box" data-paste-box>
+                  <textarea data-paste-input placeholder="Paste the refined SVG markup from your model here, then apply. It replaces the live preview in this tile only." aria-label="Paste refined SVG for Precision refinement"></textarea>
+                  <div class="paste-actions">
+                    <button type="button" data-paste-apply>Apply to this tile</button>
+                    <button type="button" class="ghost" data-paste-reset>Back to live preview</button>
+                  </div>
+                  <div class="paste-status" data-paste-status></div>
+                </div>
+              </div>
               <div class="rating" data-rating aria-label="Rating for Precision refinement"></div>
               <input type="text" class="verdict" data-verdict placeholder="One-line verdict, for example: crisp at full size, brittle at 16px" aria-label="Verdict for Precision refinement">
             </div>
@@ -376,6 +535,22 @@
             </div>
             <p class="sizes-note">Favicon scale check: the cue must never cost legibility.</p>
             <div class="tile-foot">
+              <div class="tile-load" data-load>
+                <div class="gen-row">
+                  <button type="button" class="btn-gen" data-generate>Generate with Recraft</button>
+                  <button type="button" class="btn-dl" data-download hidden>Download SVG</button>
+                </div>
+                <p class="gen-status" data-gen-status aria-live="polite"></p>
+                <button type="button" data-load-toggle>Load a result SVG into this tile</button> <span class="custom-tag" data-custom-tag>Result loaded</span>
+                <div class="paste-box" data-paste-box>
+                  <textarea data-paste-input placeholder="Paste the refined SVG markup from your model here, then apply. It replaces the live preview in this tile only." aria-label="Paste refined SVG for Momentum refinement"></textarea>
+                  <div class="paste-actions">
+                    <button type="button" data-paste-apply>Apply to this tile</button>
+                    <button type="button" class="ghost" data-paste-reset>Back to live preview</button>
+                  </div>
+                  <div class="paste-status" data-paste-status></div>
+                </div>
+              </div>
               <div class="rating" data-rating aria-label="Rating for Momentum refinement"></div>
               <input type="text" class="verdict" data-verdict placeholder="One-line verdict, for example: cue reads well, watch the final N" aria-label="Verdict for Momentum refinement">
             </div>
@@ -587,65 +762,156 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
   var sourcePreview = document.getElementById('sourcePreview');
   var brandInput = document.getElementById('brandName');
   var updateBtn = document.getElementById('updateBtn');
+  var runSettingsEl = document.getElementById('runSettings');
+  var keyInput = document.getElementById('recraftKey');
+  var testKeyBtn = document.getElementById('testKeyBtn');
+  var testKeyStatus = document.getElementById('testKeyStatus');
 
-  var state = { kind: 'text', svgText: '', rasterUrl: '', fileName: '' };
+  var RECRAFT_BASE = 'https://external.api.recraft.ai/v1';
+  var state = { kind:'text', svgText:'', rasterUrl:'', fileName:'', fileBlob:null, custom:{}, generated:{} };
+
+  /* API key: localStorage only, per panel note */
+  try{
+    var savedKey = window.localStorage.getItem('recraftApiKey');
+    if(savedKey) keyInput.value = savedKey;
+  }catch(e){}
+  keyInput.addEventListener('input', function(){
+    try{
+      if(keyInput.value.trim()) window.localStorage.setItem('recraftApiKey', keyInput.value.trim());
+      else window.localStorage.removeItem('recraftApiKey');
+    }catch(e){}
+  });
+  function apiKey(){ return (keyInput.value || '').trim(); }
 
   function escapeHtml(s){
     return s.replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; });
   }
 
-  function markHTML(small){
-    if(state.kind === 'svg' && state.svgText){
-      return state.svgText;
-    }
-    if(state.kind === 'raster' && state.rasterUrl){
-      return '<img src="' + state.rasterUrl + '" alt="Uploaded logo">';
-    }
-    var name = (brandInput.value || '').trim();
-    if(!name){
-      return '<span class="text-mark empty">Upload an SVG to begin</span>';
-    }
-    return '<span class="text-mark">' + escapeHtml(name) + '</span>';
+  /* Normalize an uploaded or pasted SVG so it always fits its stage:
+     strip scripts, drop fixed width/height on the root, synthesize a
+     viewBox from width/height when missing, force meet-fit. */
+  function normalizeSVG(text){
+    text = String(text || '').replace(/<script[\s\S]*?<\/script>/gi, '');
+    var start = text.indexOf('<svg');
+    var end = text.lastIndexOf('</svg>');
+    if(start < 0 || end <= start) return '';
+    text = text.slice(start, end + 6);
+    return text.replace(/<svg([^>]*)>/i, function(m, attrs){
+      var w = /width\s*=\s*"([0-9.]+)"/i.exec(attrs);
+      var h = /height\s*=\s*"([0-9.]+)"/i.exec(attrs);
+      var hasViewBox = /viewBox\s*=/i.test(attrs);
+      attrs = attrs
+        .replace(/\swidth\s*=\s*"[^"]*"/ig, '')
+        .replace(/\sheight\s*=\s*"[^"]*"/ig, '')
+        .replace(/\spreserveAspectRatio\s*=\s*"[^"]*"/ig, '')
+        .replace(/\srole\s*=\s*"[^"]*"/ig, '');
+      if(!hasViewBox && w && h) attrs += ' viewBox="0 0 ' + w[1] + ' ' + h[1] + '"';
+      return '<svg' + attrs + ' role="img" aria-label="Logo" preserveAspectRatio="xMidYMid meet">';
+    });
   }
 
+  /* Run settings */
+  var EFFECTS = {
+    pure:    { label:'Pure vector graphic', line:'Effects level: Pure vector graphic. Flat shapes only, no gradients, shadows or effects of any kind.' },
+    minimal: { label:'Minimal effects', line:'Effects level: Minimal effects. Flat shapes with at most one subtle shadow or highlight.' },
+    moderate:{ label:'Moderate effects', line:'Effects level: Moderate effects. Soft gradients and shadows allowed, edges stay vector clean.' },
+    full:    { label:'Full effects', line:'Effects level: Full effects. Gradients, shadows and highlights allowed.' }
+  };
+  var FORMATS = {
+    svg:{ label:'SVG (vector)', model:'recraftv3_vector', ext:'svg' },
+    png:{ label:'PNG', model:'recraftv3', ext:'png' },
+    jpg:{ label:'JPG', model:'recraftv3', ext:'jpg' }
+  };
+  function selectedOutputTypes(){
+    var out = [];
+    document.querySelectorAll('input[name="outputType"]:checked').forEach(function(c){ out.push(c.value); });
+    return out;
+  }
+  function selectedEffects(){
+    var r = document.querySelector('input[name="effectsLevel"]:checked');
+    return r ? r.value : 'pure';
+  }
+  function selectedFormat(){
+    var r = document.querySelector('input[name="outputFormat"]:checked');
+    return r ? r.value : 'svg';
+  }
+  function settingsBlock(){
+    var types = selectedOutputTypes();
+    var fx = EFFECTS[selectedEffects()] || EFFECTS.pure;
+    var fmt = FORMATS[selectedFormat()] || FORMATS.svg;
+    return '\n\nRun settings:\n' +
+      '- Output type(s) wanted: ' + (types.length ? types.join(', ') : 'Wordmark') + '\n' +
+      '- ' + fx.line + '\n' +
+      '- Output format: ' + fmt.label + '\n' +
+      '- Brand name: ' + ((brandInput.value || '').trim() || 'the uploaded brand');
+  }
+  function updateRunSettings(){
+    var types = selectedOutputTypes();
+    var fx = EFFECTS[selectedEffects()] || EFFECTS.pure;
+    var fmt = FORMATS[selectedFormat()] || FORMATS.svg;
+    runSettingsEl.innerHTML = '<strong>Current run settings:</strong> Output: ' +
+      escapeHtml(types.length ? types.join(' + ') : 'none selected') +
+      ' &middot; Effects: ' + escapeHtml(fx.label) +
+      ' &middot; Format: ' + escapeHtml(fmt.label) +
+      ' &middot; Input: ' + (state.kind === 'svg' ? 'SVG vector' : (state.kind === 'raster' ? 'raster image' : 'brand name text'));
+  }
+
+  function baseContent(){
+    if(state.kind === 'svg' && state.svgText) return state.svgText;
+    if(state.kind === 'raster' && state.rasterUrl) return '<img src="' + state.rasterUrl + '" alt="Uploaded logo">';
+    var name = (brandInput.value || '').trim();
+    if(!name) return '<span class="text-mark empty">Upload an SVG to begin</span>';
+    return '<span class="text-mark">' + escapeHtml(name) + '</span>';
+  }
+  function markFor(key){
+    var gen = state.generated[key];
+    if(gen){
+      var g = gen.kind === 'svg' ? gen.text : '<img src="' + gen.url + '" alt="Generated logo draft">';
+      return '<span class="mark-wrap"><span class="mark-inner">' + g + '</span></span>';
+    }
+    if(state.custom[key]){
+      return '<span class="mark-wrap"><span class="mark-inner">' + state.custom[key] + '</span></span>';
+    }
+    return '<span class="mark-wrap variant-' + key + ' fx-' + selectedEffects() + '"><span class="mark-inner">' + baseContent() + '</span></span>';
+  }
+  function tileKeyFor(el){
+    var t = el.closest ? el.closest('[data-tile]') : null;
+    return t ? t.getAttribute('data-tile') : 'original';
+  }
   function renderMarks(){
-    var mains = document.querySelectorAll('[data-mark]');
-    for(var i=0;i<mains.length;i++){ mains[i].innerHTML = markHTML(false); }
-    var smalls = document.querySelectorAll('[data-mark-small]');
-    for(var j=0;j<smalls.length;j++){ smalls[j].innerHTML = markHTML(true); }
+    document.querySelectorAll('[data-mark]').forEach(function(slot){ slot.innerHTML = markFor(tileKeyFor(slot)); });
+    document.querySelectorAll('[data-mark-small]').forEach(function(slot){ slot.innerHTML = markFor(tileKeyFor(slot)); });
     if(state.kind === 'text'){
       sourcePreview.classList.remove('show');
       sourcePreview.innerHTML = '';
     } else {
       sourcePreview.classList.add('show');
-      sourcePreview.innerHTML = '<div class="mark-slot">' + markHTML(false) + '</div>';
+      sourcePreview.innerHTML = '<div class="mark-slot">' + markFor('original') + '</div>';
     }
+    updateRunSettings();
   }
 
   function handleFile(file){
     if(!file) return;
     state.fileName = file.name;
+    state.fileBlob = file;
+    state.generated = {};
+    state.custom = {};
+    document.querySelectorAll('[data-download]').forEach(function(b){ b.hidden = true; });
+    document.querySelectorAll('[data-gen-status]').forEach(function(s){ s.textContent = ''; s.classList.remove('error'); });
+    document.querySelectorAll('[data-custom-tag]').forEach(function(t){ t.classList.remove('show'); });
     var lower = file.name.toLowerCase();
     var isSvg = file.type === 'image/svg+xml' || lower.endsWith('.svg');
-    var sizeKb = Math.max(1, Math.round(file.size/1024));
+    var sizeKb = Math.max(1, Math.round(file.size / 1024));
     fileMeta.classList.add('show');
     if(isSvg){
       rasterWarning.classList.remove('show');
       var reader = new FileReader();
       reader.onload = function(){
-        var text = String(reader.result || '');
-        // Basic guard: only keep the svg element itself
-        var start = text.indexOf('<svg');
-        var end = text.lastIndexOf('</svg>');
-        if(start >= 0 && end > start){
-          text = text.slice(start, end + 6);
-          // Force black presentation per the brief unless the file defines its own fills:
-          // leave fills untouched, just ensure it scales.
-          text = text.replace('<svg', '<svg role="img" aria-label="Uploaded logo" preserveAspectRatio="xMidYMid meet"');
-          state.kind = 'svg';
-          state.svgText = text;
-          state.rasterUrl = '';
-          fileMeta.innerHTML = '<strong>' + escapeHtml(file.name) + '</strong> &middot; SVG vector &middot; ' + sizeKb + ' KB &middot; rendered inline in all four tiles.';
+        var text = normalizeSVG(String(reader.result || ''));
+        if(text){
+          state.kind = 'svg'; state.svgText = text; state.rasterUrl = '';
+          fileMeta.innerHTML = '<strong>' + escapeHtml(file.name) + '</strong> &middot; SVG vector &middot; ' + sizeKb + ' KB &middot; fitted to every tile stage.';
         } else {
           fileMeta.innerHTML = '<strong>' + escapeHtml(file.name) + '</strong> could not be read as an SVG. Try exporting again as a plain SVG.';
           state.kind = 'text'; state.svgText = '';
@@ -657,9 +923,7 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
       rasterWarning.classList.add('show');
       var r2 = new FileReader();
       r2.onload = function(){
-        state.kind = 'raster';
-        state.rasterUrl = String(r2.result || '');
-        state.svgText = '';
+        state.kind = 'raster'; state.rasterUrl = String(r2.result || ''); state.svgText = '';
         fileMeta.innerHTML = '<strong>' + escapeHtml(file.name) + '</strong> &middot; raster image &middot; ' + sizeKb + ' KB &middot; shown for layout only, see the warning above.';
         renderMarks();
       };
@@ -675,8 +939,11 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
     var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
     handleFile(f);
   });
-  brandInput.addEventListener('input', function(){ if(state.kind === 'text') renderMarks(); });
+  brandInput.addEventListener('input', function(){ renderMarks(); });
   updateBtn.addEventListener('click', function(){ renderMarks(); });
+  document.querySelectorAll('input[name="outputType"], input[name="effectsLevel"], input[name="outputFormat"]').forEach(function(el){
+    el.addEventListener('change', function(){ renderMarks(); });
+  });
 
   /* Star ratings */
   var starSVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>';
@@ -687,13 +954,13 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
     container.appendChild(label);
     var value = 0;
     var stars = [];
-    for(var i=1;i<=5;i++){
+    for(var i = 1; i <= 5; i++){
       (function(n){
         var b = document.createElement('button');
         b.type = 'button';
         b.className = 'star';
         b.innerHTML = starSVG;
-        b.setAttribute('aria-label', n + ' star' + (n>1?'s':''));
+        b.setAttribute('aria-label', n + ' star' + (n > 1 ? 's' : ''));
         b.addEventListener('click', function(){
           value = (value === n) ? 0 : n;
           stars.forEach(function(s, idx){ s.classList.toggle('on', idx < value); });
@@ -714,7 +981,8 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
   }
   tabs.forEach(function(tab){ tab.addEventListener('click', function(){ activateTab(tab); }); });
 
-  /* Recommended tab follows input type */
+  /* Recommended tab follows input type; matching output type gets ticked too */
+  var TYPE_TO_OUTPUT = { wordmark:'Wordmark', lettermark:'Lettermark', symbol:'Symbol', combination:'Combination' };
   function syncRecommended(){
     var checked = document.querySelector('input[name="inputType"]:checked');
     var type = checked ? checked.value : 'wordmark';
@@ -723,37 +991,234 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
       var note = p.querySelector('[data-rec-note]');
       if(note) note.classList.toggle('show', p.getAttribute('data-type-panel') === type);
     });
+    var want = TYPE_TO_OUTPUT[type];
+    if(want){
+      document.querySelectorAll('input[name="outputType"]').forEach(function(c){ if(c.value === want) c.checked = true; });
+    }
+    updateRunSettings();
   }
   document.querySelectorAll('input[name="inputType"]').forEach(function(r){ r.addEventListener('change', syncRecommended); });
-  syncRecommended();
 
-  /* Version bump + copy, per panel */
+  /* Version bump + copy (copy appends the run settings) */
   document.querySelectorAll('[data-panel]').forEach(function(panel){
     var pill = panel.querySelector('[data-version]');
     var bump = panel.querySelector('[data-bump]');
     if(bump && pill){
       bump.addEventListener('click', function(){
-        var n = parseInt(pill.textContent.replace(/[^0-9]/g,''), 10) || 1;
+        var n = parseInt(pill.textContent.replace(/[^0-9]/g, ''), 10) || 1;
         pill.textContent = 'v' + (n + 1);
-        bump.textContent = 'Bump to next version';
       });
     }
     var copyBtn = panel.querySelector('[data-copy]');
     var area = panel.querySelector('[data-prompt]');
     if(copyBtn && area){
       copyBtn.addEventListener('click', function(){
+        var text = area.value + settingsBlock();
         var done = function(){
           var old = copyBtn.textContent;
           copyBtn.textContent = 'Copied';
           setTimeout(function(){ copyBtn.textContent = old; }, 1600);
         };
         if(navigator.clipboard && navigator.clipboard.writeText){
-          navigator.clipboard.writeText(area.value).then(done, function(){ area.select(); document.execCommand('copy'); done(); });
+          navigator.clipboard.writeText(text).then(done, function(){ area.select(); document.execCommand('copy'); done(); });
         } else { area.select(); document.execCommand('copy'); done(); }
       });
     }
   });
 
+  /* Paste a result SVG into a tile */
+  document.querySelectorAll('[data-load]').forEach(function(box){
+    var tile = box.closest('[data-tile]');
+    var key = tile ? tile.getAttribute('data-tile') : 'original';
+    var toggle = box.querySelector('[data-load-toggle]');
+    var pasteBox = box.querySelector('[data-paste-box]');
+    var input = box.querySelector('[data-paste-input]');
+    var status = box.querySelector('[data-paste-status]');
+    var tag = box.querySelector('[data-custom-tag]');
+    toggle.addEventListener('click', function(){ pasteBox.classList.toggle('show'); });
+    box.querySelector('[data-paste-apply]').addEventListener('click', function(){
+      var text = normalizeSVG(input.value || '');
+      if(!text){ status.textContent = 'That did not parse as SVG markup. Paste the full <svg>...</svg> code.'; return; }
+      state.custom[key] = text;
+      delete state.generated[key];
+      var dl = box.querySelector('[data-download]'); if(dl) dl.hidden = true;
+      tag.classList.add('show');
+      status.textContent = 'Loaded into this tile. Check it at 16px and 32px, then rate it.';
+      renderMarks();
+    });
+    box.querySelector('[data-paste-reset]').addEventListener('click', function(){
+      delete state.custom[key];
+      delete state.generated[key];
+      var dl2 = box.querySelector('[data-download]'); if(dl2) dl2.hidden = true;
+      tag.classList.remove('show');
+      status.textContent = 'Back to the live preview.';
+      renderMarks();
+    });
+  });
+
+  /* Recraft generation */
+  function variationPrompt(key){
+    var panel = document.getElementById('panel-' + key);
+    var area = panel ? panel.querySelector('[data-prompt]') : null;
+    return area ? area.value : '';
+  }
+  function setGenStatus(box, msg, isError){
+    var s = box.querySelector('[data-gen-status]');
+    if(!s) return;
+    s.textContent = msg;
+    s.classList.toggle('error', !!isError);
+  }
+  function saveBlob(blob, filename){
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+  }
+  function doDownload(key, box){
+    var gen = state.generated[key];
+    var fmt = FORMATS[selectedFormat()] || FORMATS.svg;
+    var base = ((brandInput.value || 'logo').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'logo') + '-' + key;
+    if(gen && gen.kind === 'svg'){
+      saveBlob(new Blob([gen.text], { type:'image/svg+xml' }), base + '.svg');
+      return;
+    }
+    if(gen && gen.kind === 'url'){
+      fetch(gen.url).then(function(r){ return r.blob(); }).then(function(b){
+        saveBlob(b, base + '.' + fmt.ext);
+      }).catch(function(){
+        var a = document.createElement('a');
+        a.href = gen.url; a.download = base + '.' + fmt.ext; a.target = '_blank'; a.rel = 'noopener';
+        document.body.appendChild(a); a.click(); a.remove();
+      });
+      return;
+    }
+    if(state.custom[key]){
+      saveBlob(new Blob([state.custom[key]], { type:'image/svg+xml' }), base + '.svg');
+    }
+  }
+  function generate(key, box, btn){
+    var keyVal = apiKey();
+    if(!keyVal){
+      setGenStatus(box, 'No Recraft API key yet. Paste your key in the Logo source panel, then generate again.', true);
+      keyInput.focus();
+      return;
+    }
+    var fmtKey = selectedFormat();
+    var fmt = FORMATS[fmtKey] || FORMATS.svg;
+    var prompt = variationPrompt(key) + settingsBlock();
+    btn.disabled = true;
+    var oldLabel = btn.textContent;
+    btn.textContent = 'Generating...';
+    setGenStatus(box, 'Sending to Recraft (' + fmt.model + ')...', false);
+
+    var headers = { 'Authorization': 'Bearer ' + keyVal };
+    var request;
+    if(state.fileBlob){
+      var fd = new FormData();
+      fd.append('image', state.fileBlob, state.fileName || 'logo.svg');
+      fd.append('prompt', prompt);
+      fd.append('model', fmt.model);
+      fd.append('strength', '0.35');
+      fd.append('n', '1');
+      request = fetch(RECRAFT_BASE + '/images/imageToImage', { method:'POST', headers:headers, body:fd });
+    } else {
+      request = fetch(RECRAFT_BASE + '/images/generations', {
+        method:'POST',
+        headers:{ 'Authorization':'Bearer ' + keyVal, 'Content-Type':'application/json' },
+        body: JSON.stringify({ prompt:prompt, model:fmt.model, size:'1024x1024', n:1 })
+      });
+    }
+    request.then(function(res){
+      return res.text().then(function(bodyText){
+        var data = null;
+        try{ data = JSON.parse(bodyText); }catch(e){}
+        if(!res.ok){
+          var msg = (data && (data.message || (data.error && (data.error.message || data.error)))) || bodyText.slice(0, 300) || ('HTTP ' + res.status);
+          throw new Error('Recraft said (HTTP ' + res.status + '): ' + msg);
+        }
+        return data;
+      });
+    }).then(function(data){
+      var item = (data && data.data && data.data[0]) || (data && data.image) || data || {};
+      var url = item.url || '';
+      var b64 = item.b64_json || '';
+      if(url && fmtKey === 'svg'){
+        return fetch(url).then(function(r){ return r.text(); }).then(function(svgText){
+          var norm = normalizeSVG(svgText);
+          if(norm) state.generated[key] = { kind:'svg', text:norm };
+          else state.generated[key] = { kind:'url', url:url };
+          finishGenerate(key, box, fmt);
+        }).catch(function(){
+          state.generated[key] = { kind:'url', url:url };
+          finishGenerate(key, box, fmt);
+        });
+      }
+      if(url){
+        state.generated[key] = { kind:'url', url:url };
+        finishGenerate(key, box, fmt);
+        return;
+      }
+      if(b64){
+        var mime = fmtKey === 'jpg' ? 'image/jpeg' : 'image/png';
+        state.generated[key] = { kind:'url', url:'data:' + mime + ';base64,' + b64 };
+        finishGenerate(key, box, fmt);
+        return;
+      }
+      throw new Error('Recraft replied without an image in the response. Nothing was generated.');
+    }).catch(function(err){
+      var msg = (err && err.message) ? err.message : String(err);
+      if(/Failed to fetch|NetworkError/i.test(msg)) msg = 'The browser could not reach Recraft (network or CORS block). Check your connection and key, then try again. Detail: ' + msg;
+      setGenStatus(box, 'Generation failed. ' + msg, true);
+    }).then(function(){
+      btn.disabled = false;
+      btn.textContent = oldLabel;
+    });
+  }
+  function finishGenerate(key, box, fmt){
+    delete state.custom[key];
+    var dl = box.querySelector('[data-download]');
+    if(dl){
+      dl.hidden = false;
+      dl.textContent = 'Download ' + fmt.ext.toUpperCase();
+    }
+    var tag = box.querySelector('[data-custom-tag]');
+    if(tag) tag.classList.remove('show');
+    setGenStatus(box, 'Generated with Recraft (' + fmt.model + '). Draft only: check it at 16px and 32px, then rate it.', false);
+    renderMarks();
+  }
+  document.querySelectorAll('[data-load]').forEach(function(box){
+    var tile = box.closest('[data-tile]');
+    var key = tile ? tile.getAttribute('data-tile') : 'original';
+    var genBtn = box.querySelector('[data-generate]');
+    var dlBtn = box.querySelector('[data-download]');
+    if(genBtn) genBtn.addEventListener('click', function(){ generate(key, box, genBtn); });
+    if(dlBtn) dlBtn.addEventListener('click', function(){ doDownload(key, box); });
+  });
+
+  /* Test key */
+  if(testKeyBtn){
+    testKeyBtn.addEventListener('click', function(){
+      var k = apiKey();
+      if(!k){ testKeyStatus.textContent = 'Paste a key first.'; return; }
+      testKeyStatus.textContent = 'Testing...';
+      fetch(RECRAFT_BASE + '/users/me', { headers:{ 'Authorization':'Bearer ' + k } }).then(function(res){
+        return res.text().then(function(t){
+          if(res.ok){
+            var d = null; try{ d = JSON.parse(t); }catch(e){}
+            var bal = d && d.credits !== undefined ? (' Credits: ' + d.credits + '.') : '';
+            testKeyStatus.textContent = 'Key works.' + bal;
+          } else {
+            testKeyStatus.textContent = 'Key rejected (HTTP ' + res.status + '): ' + t.slice(0, 200);
+          }
+        });
+      }).catch(function(err){
+        testKeyStatus.textContent = 'Could not reach Recraft: ' + ((err && err.message) || err);
+      });
+    });
+  }
+
+  syncRecommended();
   renderMarks();
 })();
 </script>
