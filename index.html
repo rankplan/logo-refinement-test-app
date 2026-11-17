@@ -303,6 +303,8 @@ h3{font-weight:500}
         <select id="providerSelect" class="api-select" aria-label="API provider">
           <option value="free" selected>Free test (no key)</option>
           <option value="recraft">Recraft (API key)</option>
+          <option value="ideogram">Ideogram (API key)</option>
+          <option value="openai">OpenAI (API key)</option>
         </select>
       </div>
 
@@ -313,6 +315,24 @@ h3{font-weight:500}
           <button type="button" class="btn secondary small" id="testKeyBtn">Test key</button>
         </div>
         <span class="key-note" id="testKeyStatus" aria-live="polite"></span>
+      </div>
+
+      <div class="field provider-key-off" id="ideogramKeyWrap" style="margin-top:16px">
+        <label for="ideogramKey">Ideogram API key</label>
+        <div class="gen-row">
+          <input type="password" id="ideogramKey" placeholder="Paste your Ideogram API key" autocomplete="off" spellcheck="false" style="flex:1;min-width:0;height:40px;border:1px solid var(--line-strong);border-radius:8px;background:var(--bg);padding:0 12px;font-size:14px">
+          <button type="button" class="btn secondary small" id="testIdeogramBtn">Test key</button>
+        </div>
+        <span class="key-note" id="testIdeogramStatus" aria-live="polite"></span>
+      </div>
+
+      <div class="field provider-key-off" id="openaiKeyWrap" style="margin-top:16px">
+        <label for="openaiKey">OpenAI API key</label>
+        <div class="gen-row">
+          <input type="password" id="openaiKey" placeholder="Paste your OpenAI API key" autocomplete="off" spellcheck="false" style="flex:1;min-width:0;height:40px;border:1px solid var(--line-strong);border-radius:8px;background:var(--bg);padding:0 12px;font-size:14px">
+          <button type="button" class="btn secondary small" id="testOpenaiBtn">Test key</button>
+        </div>
+        <span class="key-note" id="testOpenaiStatus" aria-live="polite"></span>
       </div>
 
       <p class="sec-label">Upload logo</p>
@@ -761,14 +781,24 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
   var keyInput = document.getElementById('recraftKey');
   var testKeyBtn = document.getElementById('testKeyBtn');
   var testKeyStatus = document.getElementById('testKeyStatus');
+  var ideogramKeyInput = document.getElementById('ideogramKey');
+  var openaiKeyInput = document.getElementById('openaiKey');
+  var testIdeogramBtn = document.getElementById('testIdeogramBtn');
+  var testIdeogramStatus = document.getElementById('testIdeogramStatus');
+  var testOpenaiBtn = document.getElementById('testOpenaiBtn');
+  var testOpenaiStatus = document.getElementById('testOpenaiStatus');
 
   var RECRAFT_BASE = 'https://external.api.recraft.ai/v1';
   var state = { kind:'text', svgText:'', rasterUrl:'', fileName:'', fileBlob:null, custom:{}, generated:{} };
 
-  /* API key: localStorage only, per panel note */
+  /* API keys: localStorage only */
   try{
     var savedKey = window.localStorage.getItem('recraftApiKey');
     if(savedKey) keyInput.value = savedKey;
+    var savedIdeo = window.localStorage.getItem('ideogramApiKey');
+    if(savedIdeo && ideogramKeyInput) ideogramKeyInput.value = savedIdeo;
+    var savedOai = window.localStorage.getItem('openaiApiKey');
+    if(savedOai && openaiKeyInput) openaiKeyInput.value = savedOai;
   }catch(e){}
   keyInput.addEventListener('input', function(){
     try{
@@ -776,33 +806,84 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
       else window.localStorage.removeItem('recraftApiKey');
     }catch(e){}
   });
+  if(ideogramKeyInput) ideogramKeyInput.addEventListener('input', function(){
+    try{
+      if(ideogramKeyInput.value.trim()) window.localStorage.setItem('ideogramApiKey', ideogramKeyInput.value.trim());
+      else window.localStorage.removeItem('ideogramApiKey');
+    }catch(e){}
+  });
+  if(openaiKeyInput) openaiKeyInput.addEventListener('input', function(){
+    try{
+      if(openaiKeyInput.value.trim()) window.localStorage.setItem('openaiApiKey', openaiKeyInput.value.trim());
+      else window.localStorage.removeItem('openaiApiKey');
+    }catch(e){}
+  });
   function apiKey(){ return (keyInput.value || '').trim(); }
+  function ideogramApiKey(){ return ideogramKeyInput ? (ideogramKeyInput.value || '').trim() : ''; }
+  function openaiApiKey(){ return openaiKeyInput ? (openaiKeyInput.value || '').trim() : ''; }
+  function currentApiKey(){
+    var p = selectedProvider();
+    if(p === 'ideogram') return ideogramApiKey();
+    if(p === 'openai') return openaiApiKey();
+    if(p === 'recraft') return apiKey();
+    return '';
+  }
   /* Free test provider: Pollinations, keyless text-to-image */
   function selectedProvider(){
     var sel = document.getElementById('providerSelect');
     return sel ? sel.value : 'free';
   }
-  function genLabel(){ return selectedProvider() === 'free' ? 'Generate (free test)' : 'Generate with Recraft'; }
+  function providerLabel(p){
+    p = p || selectedProvider();
+    if(p === 'free') return 'Free test';
+    if(p === 'recraft') return 'Recraft';
+    if(p === 'ideogram') return 'Ideogram';
+    if(p === 'openai') return 'OpenAI';
+    return p;
+  }
+  function isRasterOnly(){
+    return selectedProvider() !== 'recraft';
+  }
+  function genLabel(){
+    var p = selectedProvider();
+    if(p === 'free') return 'Generate (free test)';
+    if(p === 'ideogram') return 'Generate with Ideogram';
+    if(p === 'openai') return 'Generate with OpenAI';
+    return 'Generate with Recraft';
+  }
   function updateProviderUI(){
-    var free = selectedProvider() === 'free';
+    var p = selectedProvider();
+    var free = p === 'free';
+    var rasterOnly = isRasterOnly();
     var wrap = document.getElementById('recraftKeyWrap');
-    if(wrap) wrap.classList.toggle('provider-key-off', free);
-    if(keyInput) keyInput.disabled = free;
-    if(testKeyBtn) testKeyBtn.disabled = free;
+    if(wrap) wrap.classList.toggle('provider-key-off', p !== 'recraft');
+    var iWrap = document.getElementById('ideogramKeyWrap');
+    if(iWrap) iWrap.classList.toggle('provider-key-off', p !== 'ideogram');
+    var oWrap = document.getElementById('openaiKeyWrap');
+    if(oWrap) oWrap.classList.toggle('provider-key-off', p !== 'openai');
+    if(keyInput) keyInput.disabled = p !== 'recraft';
+    if(testKeyBtn) testKeyBtn.disabled = p !== 'recraft';
+    if(ideogramKeyInput) ideogramKeyInput.disabled = p !== 'ideogram';
+    if(testIdeogramBtn) testIdeogramBtn.disabled = p !== 'ideogram';
+    if(openaiKeyInput) openaiKeyInput.disabled = p !== 'openai';
+    if(testOpenaiBtn) testOpenaiBtn.disabled = p !== 'openai';
     var note = document.getElementById('providerNote');
     if(note) note.textContent = free ? 'No key needed' : '';
     var svgInput = document.querySelector('input[name="outputFormat"][value="svg"]');
     if(svgInput){
-      svgInput.disabled = free;
+      svgInput.disabled = rasterOnly;
       var lab = svgInput.closest ? svgInput.closest('label') : null;
-      if(lab) lab.classList.toggle('disabled', free);
-      if(free && selectedFormat() === 'svg'){
+      if(lab) lab.classList.toggle('disabled', rasterOnly);
+      if(rasterOnly && selectedFormat() === 'svg'){
         var png = document.querySelector('input[name="outputFormat"][value="png"]');
         if(png) png.checked = true;
       }
     }
     var fNote = document.getElementById('formatFreeNote');
-    if(fNote) fNote.hidden = !free;
+    if(fNote){
+      fNote.hidden = !rasterOnly;
+      if(rasterOnly) fNote.textContent = 'SVG needs Recraft';
+    }
     document.querySelectorAll('[data-generate]').forEach(function(b){ if(!b.disabled) b.textContent = genLabel(); });
     if(typeof updateRunSettings === 'function') updateRunSettings();
   }
@@ -840,6 +921,121 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
       btn.textContent = oldLabel;
     };
     img.src = url;
+  }
+
+  function finishRasterGenerate(key, box, fmt, provName){
+    delete state.custom[key];
+    var dl = box.querySelector('[data-download]');
+    if(dl){ dl.hidden = false; dl.textContent = 'Download ' + fmt.ext.toUpperCase(); }
+    var tag = box.querySelector('[data-custom-tag]');
+    if(tag){ tag.textContent = provName + ' draft'; tag.classList.add('show'); }
+    setGenStatus(box, 'Generated with ' + provName + '. Draft only: check it at 16px and 32px, then rate it.', false);
+    renderMarks();
+  }
+
+  function generateIdeogram(key, box, btn){
+    var k = ideogramApiKey();
+    if(!k){
+      setGenStatus(box, 'No Ideogram API key yet. Paste your key in the Logo source panel, then generate again.', true);
+      if(ideogramKeyInput) ideogramKeyInput.focus();
+      return;
+    }
+    var fmtKey = selectedFormat();
+    if(fmtKey === 'svg') fmtKey = 'png';
+    var fmt = FORMATS[fmtKey] || FORMATS.png;
+    var prompt = variationPrompt(key) + settingsBlock();
+    var oldLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    setGenStatus(box, 'Sending to Ideogram...', false);
+    fetch('https://api.ideogram.ai/generate', {
+      method:'POST',
+      headers:{ 'Api-Key': k, 'Content-Type':'application/json' },
+      body: JSON.stringify({ image_request:{ prompt: prompt, model:'V_2', aspect_ratio:'ASPECT_1_1', magic_prompt_option:'OFF' } })
+    }).then(function(res){
+      return res.text().then(function(bodyText){
+        var data = null;
+        try{ data = JSON.parse(bodyText); }catch(e){}
+        if(!res.ok){
+          var msg = '';
+          if(data){
+            msg = data.detail || data.message || (data.error && (data.error.message || data.error)) || '';
+            if(!msg && Array.isArray(data) && data[0]) msg = String(data[0]);
+            if(!msg && data.data && data.data[0] && data.data[0].resolution) msg = '';
+          }
+          if(!msg) msg = bodyText ? bodyText.slice(0, 500) : ('HTTP ' + res.status);
+          throw new Error('Ideogram said (HTTP ' + res.status + '): ' + msg);
+        }
+        return data;
+      });
+    }).then(function(data){
+      var item = data && data.data && data.data[0];
+      var url = item && item.url;
+      if(!url) throw new Error('Ideogram replied without an image URL in the response. Nothing was generated.');
+      state.generated[key] = { kind:'url', url:url, provider:'ideogram' };
+      finishRasterGenerate(key, box, fmt, 'Ideogram');
+    }).catch(function(err){
+      var msg = (err && err.message) ? err.message : String(err);
+      if(/Failed to fetch|NetworkError|Load failed/i.test(msg)) msg = 'Ideogram could not be reached from the browser (network or CORS block). Check your connection and key, then try again. Detail: ' + msg;
+      setGenStatus(box, 'Generation failed. ' + msg, true);
+    }).then(function(){
+      btn.disabled = false;
+      btn.textContent = genLabel();
+    });
+  }
+
+  function generateOpenAI(key, box, btn){
+    var k = openaiApiKey();
+    if(!k){
+      setGenStatus(box, 'No OpenAI API key yet. Paste your key in the Logo source panel, then generate again.', true);
+      if(openaiKeyInput) openaiKeyInput.focus();
+      return;
+    }
+    var fmtKey = selectedFormat();
+    if(fmtKey === 'svg') fmtKey = 'png';
+    var fmt = FORMATS[fmtKey] || FORMATS.png;
+    var prompt = variationPrompt(key) + settingsBlock();
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    setGenStatus(box, 'Sending to OpenAI...', false);
+    fetch('https://api.openai.com/v1/images/generations', {
+      method:'POST',
+      headers:{ 'Authorization':'Bearer ' + k, 'Content-Type':'application/json' },
+      body: JSON.stringify({ model:'gpt-image-1', prompt: prompt, size:'1024x1024' })
+    }).then(function(res){
+      return res.text().then(function(bodyText){
+        var data = null;
+        try{ data = JSON.parse(bodyText); }catch(e){}
+        if(!res.ok){
+          var msg = '';
+          if(data){
+            msg = (data.error && (data.error.message || data.error)) || data.message || data.detail || '';
+          }
+          if(!msg) msg = bodyText ? bodyText.slice(0, 500) : ('HTTP ' + res.status);
+          throw new Error('OpenAI said (HTTP ' + res.status + '): ' + msg);
+        }
+        return data;
+      });
+    }).then(function(data){
+      var item = data && data.data && data.data[0];
+      var b64 = item && item.b64_json;
+      var url = item && item.url;
+      if(b64){
+        state.generated[key] = { kind:'url', url:'data:image/png;base64,' + b64, provider:'openai' };
+      } else if(url){
+        state.generated[key] = { kind:'url', url:url, provider:'openai' };
+      } else {
+        throw new Error('OpenAI replied without an image in the response. Nothing was generated.');
+      }
+      finishRasterGenerate(key, box, fmt, 'OpenAI');
+    }).catch(function(err){
+      var msg = (err && err.message) ? err.message : String(err);
+      if(/Failed to fetch|NetworkError|Load failed/i.test(msg)) msg = 'OpenAI could not be reached from the browser (network or CORS block). Check your connection and key, then try again. Detail: ' + msg;
+      setGenStatus(box, 'Generation failed. ' + msg, true);
+    }).then(function(){
+      btn.disabled = false;
+      btn.textContent = genLabel();
+    });
   }
 
 
@@ -910,7 +1106,7 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
     var types = selectedOutputTypes();
     var fx = EFFECTS[selectedEffects()] || EFFECTS.pure;
     var fmt = FORMATS[selectedFormat()] || FORMATS.svg;
-    runSettingsEl.innerHTML = '<strong>Current run settings:</strong> Provider: ' + (selectedProvider() === 'free' ? 'Free test' : 'Recraft') + ' &middot; Output: ' +
+    runSettingsEl.innerHTML = '<strong>Current run settings:</strong> Provider: ' + escapeHtml(providerLabel()) + ' &middot; Output: ' +
       escapeHtml(types.length ? types.join(' + ') : 'none selected') +
       ' &middot; Effects: ' + escapeHtml(fx.label) +
       ' &middot; Format: ' + escapeHtml(fmt.label) +
@@ -1162,7 +1358,10 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
     }
   }
   function generate(key, box, btn){
-    if(selectedProvider() === 'free'){ generateFree(key, box, btn); return; }
+    var prov = selectedProvider();
+    if(prov === 'free'){ generateFree(key, box, btn); return; }
+    if(prov === 'ideogram'){ generateIdeogram(key, box, btn); return; }
+    if(prov === 'openai'){ generateOpenAI(key, box, btn); return; }
     var keyVal = apiKey();
     if(!keyVal){
       setGenStatus(box, 'No Recraft API key yet. Paste your key in the Logo source panel, then generate again.', true);
@@ -1279,6 +1478,52 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
         });
       }).catch(function(err){
         testKeyStatus.textContent = 'Could not reach Recraft: ' + ((err && err.message) || err);
+      });
+    });
+  }
+
+  if(testIdeogramBtn){
+    testIdeogramBtn.addEventListener('click', function(){
+      var k = ideogramApiKey();
+      if(!k){ testIdeogramStatus.textContent = 'Paste a key first.'; return; }
+      testIdeogramStatus.textContent = 'Testing...';
+      fetch('https://api.ideogram.ai/generate', {
+        method:'POST',
+        headers:{ 'Api-Key': k, 'Content-Type':'application/json' },
+        body: JSON.stringify({ image_request:{ prompt:'', model:'V_2', aspect_ratio:'ASPECT_1_1', magic_prompt_option:'OFF' } })
+      }).then(function(res){
+        return res.text().then(function(t){
+          if(res.status === 401 || res.status === 403){
+            testIdeogramStatus.textContent = 'Key rejected (HTTP ' + res.status + '): ' + t.slice(0, 200);
+          } else if(res.ok){
+            testIdeogramStatus.textContent = 'Key works.';
+          } else {
+            // 400/422 means auth passed, validation failed on empty prompt - key is valid
+            if(res.status === 400 || res.status === 422) testIdeogramStatus.textContent = 'Key works.';
+            else testIdeogramStatus.textContent = 'Response (HTTP ' + res.status + '): ' + t.slice(0, 200);
+          }
+        });
+      }).catch(function(err){
+        var m = (err && err.message) || String(err);
+        if(/Failed to fetch|NetworkError|Load failed/i.test(m)) testIdeogramStatus.textContent = 'Ideogram could not be reached from the browser.';
+        else testIdeogramStatus.textContent = 'Could not reach Ideogram: ' + m;
+      });
+    });
+  }
+  if(testOpenaiBtn){
+    testOpenaiBtn.addEventListener('click', function(){
+      var k = openaiApiKey();
+      if(!k){ testOpenaiStatus.textContent = 'Paste a key first.'; return; }
+      testOpenaiStatus.textContent = 'Testing...';
+      fetch('https://api.openai.com/v1/models', { headers:{ 'Authorization':'Bearer ' + k } }).then(function(res){
+        return res.text().then(function(t){
+          if(res.ok) testOpenaiStatus.textContent = 'Key works.';
+          else testOpenaiStatus.textContent = 'Key rejected (HTTP ' + res.status + '): ' + t.slice(0, 200);
+        });
+      }).catch(function(err){
+        var m = (err && err.message) || String(err);
+        if(/Failed to fetch|NetworkError|Load failed/i.test(m)) testOpenaiStatus.textContent = 'OpenAI could not be reached from the browser.';
+        else testOpenaiStatus.textContent = 'Could not reach OpenAI: ' + m;
       });
     });
   }
