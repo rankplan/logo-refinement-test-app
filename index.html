@@ -241,6 +241,46 @@ footer p{margin:0 0 8px;max-width:92ch}
 @media (prefers-reduced-motion: reduce){
   .btn,.btn-gen,.dropzone{transition:none}
 }
+
+/* Calm pass: space does the separating, not lines or badges */
+.page{max-width:1180px;padding:56px 32px 72px}
+@media(max-width:640px){.page{padding:32px 20px 56px}}
+body{line-height:1.65;font-size:14.5px}
+.masthead{border-bottom:0;padding-bottom:0;margin-bottom:48px;align-items:flex-start}
+h1{font-weight:600;font-size:28px;line-height:36px}
+.lede{margin-top:8px;color:var(--ink-2)}
+.panel{border-top:0;padding-top:0}
+.output-head{border-top:0;padding-top:0}
+.prompts{border-top:0;margin-top:64px;padding-top:0}
+.checklist{border-top:0;margin-top:40px;padding-top:0}
+.checklist .foot-note{border-top:0}
+footer{border-top:0;margin-top:64px;padding-top:0}
+.workspace{gap:56px}
+@media(max-width:980px){.workspace{gap:48px}}
+h2{font-weight:500;font-size:16px}
+h3{font-weight:500}
+.field{margin-top:40px}
+.field>label,.field legend{font-weight:500;margin-bottom:10px}
+.sec-label{font-weight:500;margin-top:40px}
+.sub{margin-top:4px}
+.type-opt,.check-opt,.effect-opt{border-bottom:0;padding:7px 0}
+.type-opt span b,.check-opt span b,.effect-opt span b{font-weight:400}
+.type-opt:has(input:checked) span b,.check-opt:has(input:checked) span b,.effect-opt:has(input:checked) span b{font-weight:600}
+.tile{padding:24px;border-radius:12px}
+.tiles{gap:24px}
+.tile-head .t-name{font-weight:600}
+.stage{margin-top:4px}
+.sizes{padding-top:16px}
+.tile-foot{padding-top:16px}
+.rating{margin-top:8px}
+.checklist li{border-bottom:0;padding:6px 0}
+.form-actions{margin-top:40px}
+.api-select{width:100%;height:40px;border:1px solid var(--line-strong);border-radius:8px;background:var(--bg);padding:0 12px;font-size:14px;color:var(--ink);appearance:auto;cursor:pointer}
+.api-select:focus{outline:none;border-color:var(--ink);box-shadow:var(--ring)}
+.key-note{color:var(--ink-3)}
+.dropzone{padding:24px}
+.tabs{margin-top:20px}
+.tab-panel{padding-top:20px}
 </style>
 </head>
 <body>
@@ -249,64 +289,43 @@ footer p{margin:0 0 8px;max-width:92ch}
   <header class="masthead">
     <div class="masthead-text">
       <h1>Logo refinement test bench</h1>
-      <p class="lede">Upload a vector logo, pick a prompt, generate, rate. <span class="draft-note">Drafts only, not production files</span></p>
+      <p class="lede">Upload a vector logo, pick a prompt, generate, rate. <span class="draft-note">Drafts only</span></p>
     </div>
-    <nav class="workflow" aria-label="Workflow">
-      <ol>
-        <li><span class="step-num">1</span> Provider</li>
-        <li><span class="step-num">2</span> Upload</li>
-        <li><span class="step-num">3</span> Type</li>
-        <li><span class="step-num">4</span> Settings</li>
-        <li><span class="step-num">5</span> Prompt</li>
-        <li><span class="step-num">6</span> Generate and rate</li>
-      </ol>
-    </nav>
   </header>
 
   <div class="workspace">
     <!-- LEFT: upload form -->
     <aside class="panel" aria-labelledby="source-h">
       <h2 id="source-h">Logo source</h2>
-      <p class="sub">SVG preferred.</p>
 
-      <fieldset class="field" style="margin-top:0">
-        <legend><span class="step-n">1</span>Provider</legend>
-        <div class="effect-list" id="providerList">
-          <label class="effect-opt">
-            <input type="radio" name="provider" value="free" checked>
-            <span><b>Free test (no key, raster)</b><small>Pollinations, text-to-image only. No key, no payment.</small></span>
-          </label>
-          <label class="effect-opt">
-            <input type="radio" name="provider" value="recraft">
-            <span><b>Recraft (own API key, SVG)</b><small>True vector output. Needs your key and a balance.</small></span>
-          </label>
-        </div>
-        <p class="key-note" id="providerNote">Free test is on: no key needed. It runs the prompt as text-to-image and returns a raster draft. An uploaded logo cannot be sent as an image input in this mode.</p>
-      </fieldset>
-
-      <div class="field" id="recraftKeyWrap">
-        <label for="recraftKey">Recraft API key</label>
-        <input type="password" id="recraftKey" placeholder="Paste your Recraft API key" autocomplete="off" spellcheck="false">
-        <p class="key-note">Stored only in this browser (localStorage) and sent only to Recraft's API at external.api.recraft.ai. Never sent anywhere else.</p>
-        <div class="gen-row" style="margin-top:8px">
-          <button type="button" class="btn secondary small" id="testKeyBtn">Test key</button>
-          <span class="key-note" id="testKeyStatus" style="margin:0" aria-live="polite"></span>
-        </div>
+      <div class="field" style="margin-top:24px">
+        <label for="providerSelect">API</label>
+        <select id="providerSelect" class="api-select" aria-label="API provider">
+          <option value="free" selected>Free test (no key)</option>
+          <option value="recraft">Recraft (API key)</option>
+        </select>
       </div>
 
-      <p class="sec-label"><span class="step-n">2</span>Upload logo</p>
+      <div class="field" id="recraftKeyWrap" style="margin-top:16px">
+        <label for="recraftKey">Recraft API key</label>
+        <div class="gen-row">
+          <input type="password" id="recraftKey" placeholder="Paste your Recraft API key" autocomplete="off" spellcheck="false" style="flex:1;min-width:0;height:40px;border:1px solid var(--line-strong);border-radius:8px;background:var(--bg);padding:0 12px;font-size:14px">
+          <button type="button" class="btn secondary small" id="testKeyBtn">Test key</button>
+        </div>
+        <span class="key-note" id="testKeyStatus" aria-live="polite"></span>
+      </div>
+
+      <p class="sec-label">Upload logo</p>
         <div class="dz-wrap">
         <div class="dropzone" id="dropzone" aria-label="Upload a logo file, SVG preferred">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
           <div class="dz-title">Drop your logo here, or click to browse</div>
-          <div class="dz-hint">SVG preferred. PNG, JPG and WebP are accepted with a warning.</div>
+          <div class="dz-hint">SVG preferred</div>
           <input type="file" id="fileInput" accept=".svg,.png,.jpg,.jpeg,.webp,.gif,image/svg+xml,image/png,image/jpeg,image/webp" aria-label="Choose logo file">
         </div>
       </div>
 
-      <div class="vector-note">Use SVG for best results. Raster files have no editable paths.</div>
-
-      <div class="warning" id="rasterWarning" role="alert">Raster input gives worse results. This file has no editable paths, so curve, kerning and stroke feedback will be guesswork. Re-export as SVG from your source file if you can.</div>
+      <div class="warning" id="rasterWarning" role="alert">Raster input gives worse results. Re-export as SVG if you can.</div>
 
       <div class="file-meta" id="fileMeta"></div>
       <div class="source-preview" id="sourcePreview" aria-label="Uploaded logo preview"></div>
@@ -317,23 +336,23 @@ footer p{margin:0 0 8px;max-width:92ch}
       </div>
 
       <fieldset class="field">
-        <legend><span class="step-n">3</span>Input type</legend>
+        <legend>Input type</legend>
         <div class="type-grid" id="typeGrid">
           <label class="type-opt">
             <input type="radio" name="inputType" value="wordmark" checked>
-            <span><b>Wordmark</b><small>Text only, no symbol</small></span>
+            <span><b>Wordmark</b></span>
           </label>
           <label class="type-opt">
             <input type="radio" name="inputType" value="lettermark">
-            <span><b>Lettermark</b><small>Initials or monogram</small></span>
+            <span><b>Lettermark</b></span>
           </label>
           <label class="type-opt">
             <input type="radio" name="inputType" value="symbol">
-            <span><b>Symbol / icon mark</b><small>Graphic mark only</small></span>
+            <span><b>Symbol</b></span>
           </label>
           <label class="type-opt">
             <input type="radio" name="inputType" value="combination">
-            <span><b>Combination mark</b><small>Symbol plus wordmark</small></span>
+            <span><b>Combination</b></span>
           </label>
         </div>
       </fieldset>
@@ -343,48 +362,48 @@ footer p{margin:0 0 8px;max-width:92ch}
         <div class="check-list" id="outputTypeList">
           <label class="check-opt">
             <input type="checkbox" name="outputType" value="Wordmark" checked>
-            <span><b>Wordmark</b><small>Text only outputs</small></span>
+            <span><b>Wordmark</b></span>
           </label>
           <label class="check-opt">
             <input type="checkbox" name="outputType" value="Lettermark">
-            <span><b>Lettermark</b><small>Initials or monogram outputs</small></span>
+            <span><b>Lettermark</b></span>
           </label>
           <label class="check-opt">
             <input type="checkbox" name="outputType" value="Symbol">
-            <span><b>Symbol</b><small>Graphic mark only outputs</small></span>
+            <span><b>Symbol</b></span>
           </label>
           <label class="check-opt">
             <input type="checkbox" name="outputType" value="Combination">
-            <span><b>Combination</b><small>Symbol plus wordmark outputs</small></span>
+            <span><b>Combination</b></span>
           </label>
         </div>
       </fieldset>
 
       <fieldset class="field">
-        <legend><span class="step-n">4</span>Effects level</legend>
+        <legend>Effects level</legend>
         <div class="effect-list" id="effectsList">
           <label class="effect-opt">
             <input type="radio" name="effectsLevel" value="pure" checked>
-            <span><b>Pure vector graphic</b><small>Flat shapes only. No gradients, shadows or effects of any kind.</small></span>
+            <span><b>Pure vector graphic</b><small>Flat shapes only</small></span>
           </label>
           <label class="effect-opt">
             <input type="radio" name="effectsLevel" value="minimal">
-            <span><b>Minimal effects</b><small>Flat shapes with at most one subtle shadow or highlight.</small></span>
+            <span><b>Minimal effects</b><small>One subtle shadow</small></span>
           </label>
           <label class="effect-opt">
             <input type="radio" name="effectsLevel" value="moderate">
-            <span><b>Moderate effects</b><small>Soft gradients and shadows allowed, edges stay vector clean.</small></span>
+            <span><b>Moderate effects</b><small>Soft gradients allowed</small></span>
           </label>
           <label class="effect-opt">
             <input type="radio" name="effectsLevel" value="full">
-            <span><b>Full effects</b><small>Gradients, shadows and highlights allowed, richest treatment.</small></span>
+            <span><b>Full effects</b><small>Gradients and shadows</small></span>
           </label>
         </div>
       </fieldset>
 
       <div class="field">
         <label for="notesField">Notes for this test</label>
-        <textarea id="notesField" placeholder="For example: watch the two A letterforms and the final N at 16px."></textarea>
+        <textarea id="notesField" placeholder="Optional"></textarea>
       </div>
 
       <fieldset class="field">
@@ -392,37 +411,32 @@ footer p{margin:0 0 8px;max-width:92ch}
         <div class="effect-list" id="formatList">
           <label class="effect-opt">
             <input type="radio" name="outputFormat" value="svg" checked>
-            <span><b>SVG (vector)</b><small>Recraft vector model, editable paths. The default, and the best fit for this app.</small></span>
+            <span><b>SVG</b><small>Vector</small></span>
           </label>
           <label class="effect-opt">
             <input type="radio" name="outputFormat" value="png">
-            <span><b>PNG</b><small>Recraft raster model, PNG image result.</small></span>
+            <span><b>PNG</b><small>Raster image</small></span>
           </label>
           <label class="effect-opt">
             <input type="radio" name="outputFormat" value="jpg">
-            <span><b>JPG</b><small>Recraft raster model, JPG image result.</small></span>
+            <span><b>JPG</b><small>Raster image</small></span>
           </label>
         </div>
-        <p class="key-note" id="formatFreeNote" hidden>SVG needs Recraft. Free test returns raster only, so PNG or JPG is used.</p>
+        <p class="key-note" id="formatFreeNote" hidden>SVG needs Recraft</p>
       </fieldset>
 
       <div class="form-actions">
         <button type="button" class="btn" id="updateBtn">Update draft previews</button>
-        <span class="hint">Previews run in this browser only. Generation sends your logo and prompt to Recraft with your key.</span>
       </div>
-      <p class="api-footnote">Free test runs in your browser via Pollinations, no key and no cost, raster drafts only. Recraft generation runs with your own key, about $0.08 per vector generation. Generated marks are drafts for exploration, never production logos.</p>
     </aside>
 
     <!-- RIGHT: output variants -->
     <section aria-labelledby="output-h">
       <div class="output-head">
         <div>
-          <h2 id="output-h"><span class="step-n">6</span>Output variants</h2>
-          <p class="sub" style="margin:0">One source, four versions.</p>
+          <h2 id="output-h">Output variants</h2>
         </div>
-        <span class="badge draft">Live previews</span>
       </div>
-      <p class="run-settings" id="runSettings" aria-live="polite"></p>
 
       <div class="output-layout">
         <div class="tiles" id="tiles">
@@ -430,31 +444,29 @@ footer p{margin:0 0 8px;max-width:92ch}
           <article class="tile" data-tile="original">
             <div class="tile-head">
               <div><div class="t-name">Original</div><div class="t-desc">The uploaded mark, untouched</div></div>
-              <span class="badge">Source</span>
+              
             </div>
             <div class="stage"><div class="mark-slot" data-mark></div></div>
             <div class="sizes">
-              <div class="size-cell"><div class="size-box s16"><div class="inner" data-mark-small></div></div><label>16px</label></div>
-              <div class="size-cell"><div class="size-box s32"><div class="inner" data-mark-small></div></div><label>32px</label></div>
+              <div class="size-cell"><div class="size-box s16"><div class="inner" data-mark-small></div></div><label>16</label></div>
+              <div class="size-cell"><div class="size-box s32"><div class="inner" data-mark-small></div></div><label>32</label></div>
             </div>
-            <p class="sizes-note">Favicon scale check: if it fails here, the refinement has not worked.</p>
             <div class="tile-foot">
               <div class="rating" data-rating aria-label="Rating for Original"></div>
-              <input type="text" class="verdict" data-verdict placeholder="One-line verdict, for example: baseline, spacing already uneven" aria-label="Verdict for Original">
+              <input type="text" class="verdict" data-verdict placeholder="Verdict" aria-label="Verdict for Original">
             </div>
           </article>
 
           <article class="tile" data-tile="minimal">
             <div class="tile-head">
               <div><div class="t-name">Minimal refinement</div><div class="t-desc">Flaws and spacing corrected only</div></div>
-              <span class="badge draft">Draft</span>
+              
             </div>
             <div class="stage"><div class="mark-slot" data-mark></div></div>
             <div class="sizes">
-              <div class="size-cell"><div class="size-box s16"><div class="inner" data-mark-small></div></div><label>16px</label></div>
-              <div class="size-cell"><div class="size-box s32"><div class="inner" data-mark-small></div></div><label>32px</label></div>
+              <div class="size-cell"><div class="size-box s16"><div class="inner" data-mark-small></div></div><label>16</label></div>
+              <div class="size-cell"><div class="size-box s32"><div class="inner" data-mark-small></div></div><label>32</label></div>
             </div>
-            <p class="sizes-note">Favicon scale check: counters should stay open, nothing should fill in.</p>
             <div class="tile-foot">
               <div class="tile-load" data-load>
                 <div class="gen-row">
@@ -473,21 +485,20 @@ footer p{margin:0 0 8px;max-width:92ch}
                 </div>
               </div>
               <div class="rating" data-rating aria-label="Rating for Minimal refinement"></div>
-              <input type="text" class="verdict" data-verdict placeholder="One-line verdict, for example: safest, cue may be too weak" aria-label="Verdict for Minimal refinement">
+              <input type="text" class="verdict" data-verdict placeholder="Verdict" aria-label="Verdict for Minimal refinement">
             </div>
           </article>
 
           <article class="tile" data-tile="precision">
             <div class="tile-head">
               <div><div class="t-name">Precision refinement</div><div class="t-desc">Sharper terminals, engineered feel</div></div>
-              <span class="badge draft">Draft</span>
+              
             </div>
             <div class="stage"><div class="mark-slot" data-mark></div></div>
             <div class="sizes">
-              <div class="size-cell"><div class="size-box s16"><div class="inner" data-mark-small></div></div><label>16px</label></div>
-              <div class="size-cell"><div class="size-box s32"><div class="inner" data-mark-small></div></div><label>32px</label></div>
+              <div class="size-cell"><div class="size-box s16"><div class="inner" data-mark-small></div></div><label>16</label></div>
+              <div class="size-cell"><div class="size-box s32"><div class="inner" data-mark-small></div></div><label>32</label></div>
             </div>
-            <p class="sizes-note">Favicon scale check: sharp details are the first thing lost at this size.</p>
             <div class="tile-foot">
               <div class="tile-load" data-load>
                 <div class="gen-row">
@@ -506,21 +517,20 @@ footer p{margin:0 0 8px;max-width:92ch}
                 </div>
               </div>
               <div class="rating" data-rating aria-label="Rating for Precision refinement"></div>
-              <input type="text" class="verdict" data-verdict placeholder="One-line verdict, for example: crisp at full size, brittle at 16px" aria-label="Verdict for Precision refinement">
+              <input type="text" class="verdict" data-verdict placeholder="Verdict" aria-label="Verdict for Precision refinement">
             </div>
           </article>
 
           <article class="tile" data-tile="momentum">
             <div class="tile-head">
               <div><div class="t-name">Momentum refinement</div><div class="t-desc">One subtle forward or upward cue</div></div>
-              <span class="badge draft">Draft</span>
+              
             </div>
             <div class="stage"><div class="mark-slot" data-mark></div></div>
             <div class="sizes">
-              <div class="size-cell"><div class="size-box s16"><div class="inner" data-mark-small></div></div><label>16px</label></div>
-              <div class="size-cell"><div class="size-box s32"><div class="inner" data-mark-small></div></div><label>32px</label></div>
+              <div class="size-cell"><div class="size-box s16"><div class="inner" data-mark-small></div></div><label>16</label></div>
+              <div class="size-cell"><div class="size-box s32"><div class="inner" data-mark-small></div></div><label>32</label></div>
             </div>
-            <p class="sizes-note">Favicon scale check: the cue must never cost legibility.</p>
             <div class="tile-foot">
               <div class="tile-load" data-load>
                 <div class="gen-row">
@@ -539,14 +549,14 @@ footer p{margin:0 0 8px;max-width:92ch}
                 </div>
               </div>
               <div class="rating" data-rating aria-label="Rating for Momentum refinement"></div>
-              <input type="text" class="verdict" data-verdict placeholder="One-line verdict, for example: cue reads well, watch the final N" aria-label="Verdict for Momentum refinement">
+              <input type="text" class="verdict" data-verdict placeholder="Verdict" aria-label="Verdict for Momentum refinement">
             </div>
           </article>
         </div>
 
         <aside class="checklist" aria-labelledby="checklist-h">
           <h3 id="checklist-h">Ideal result checklist</h3>
-          <p class="sub" style="margin:0">Check each draft against this list.</p>
+          
           <ul>
             <li><span class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 7"/></svg></span><span><b>Recognizable:</b> silhouette and spelling unchanged, instantly recognizable as the same mark.</span></li>
             <li><span class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 7"/></svg></span><span><b>Spacing:</b> even, rhythmic optical spacing between every pair, not default font spacing.</span></li>
@@ -556,7 +566,6 @@ footer p{margin:0 0 8px;max-width:92ch}
             <li><span class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 7"/></svg></span><span><b>No effects:</b> no gradients, shadows, outlines, swashes, arrows, charts or icons added.</span></li>
             <li><span class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 7"/></svg></span><span><b>Vector clean:</b> clean edges and consistent stroke logic, suitable for vector reconstruction.</span></li>
           </ul>
-          <p class="foot-note">Presentation rule from the brief: solid black on clean white, single line, generous clear space. That is why every tile stage is plain white, whatever the page theme.</p>
         </aside>
       </div>
     </section>
@@ -564,8 +573,8 @@ footer p{margin:0 0 8px;max-width:92ch}
 
   <!-- BELOW: prompt options -->
   <section class="prompts" aria-labelledby="prompts-h">
-    <h2 id="prompts-h"><span class="step-n">5</span>Prompt options</h2>
-    <p class="sub" style="max-width:78ch">Edit a prompt, copy it, run it, rate the result. The tab for your input type is marked Recommended.</p>
+    <h2 id="prompts-h">Prompt options</h2>
+    <p class="sub">Edit a prompt, copy it, run it, rate the result.</p>
 
     <div class="tabs" role="tablist" aria-label="Prompt tabs" id="tabList">
       <button type="button" class="tab" role="tab" id="tab-master" aria-controls="panel-master" aria-selected="true" data-panel="panel-master">Master brief</button>
@@ -735,7 +744,6 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
   </section>
 
   <footer>
-    <p>How to run a test: upload the SVG, pick the input type, open the recommended prompt tab and copy the prompt into your image model with the SVG attached, paste or generate drafts elsewhere, then come back and rate each tile here against the checklist. Ratings and notes live in this page session only, so copy anything you want to keep. The hard problem this bench is built for: turning a world class designer's tacit judgment (optical corrections, spacing, restraint) into prompt wording a model can actually follow, one version at a time.</p>
     <p>Muse is a trademark of Meta Platforms, Inc. Rankplan is not affiliated with or endorsed by Meta.</p>
   </footer>
 </div>
@@ -771,8 +779,8 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
   function apiKey(){ return (keyInput.value || '').trim(); }
   /* Free test provider: Pollinations, keyless text-to-image */
   function selectedProvider(){
-    var r = document.querySelector('input[name="provider"]:checked');
-    return r ? r.value : 'free';
+    var sel = document.getElementById('providerSelect');
+    return sel ? sel.value : 'free';
   }
   function genLabel(){ return selectedProvider() === 'free' ? 'Generate (free test)' : 'Generate with Recraft'; }
   function updateProviderUI(){
@@ -782,9 +790,7 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
     if(keyInput) keyInput.disabled = free;
     if(testKeyBtn) testKeyBtn.disabled = free;
     var note = document.getElementById('providerNote');
-    if(note) note.textContent = free
-      ? 'Free test is on: no key needed. It runs the prompt as text-to-image and returns a raster draft. An uploaded logo cannot be sent as an image input in this mode.'
-      : 'Recraft is on: your key below is used, and SVG output is available.';
+    if(note) note.textContent = free ? 'No key needed' : '';
     var svgInput = document.querySelector('input[name="outputFormat"][value="svg"]');
     if(svgInput){
       svgInput.disabled = free;
@@ -900,6 +906,7 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
       '- Brand name: ' + ((brandInput.value || '').trim() || 'the uploaded brand');
   }
   function updateRunSettings(){
+    if(!runSettingsEl) return;
     var types = selectedOutputTypes();
     var fx = EFFECTS[selectedEffects()] || EFFECTS.pure;
     var fmt = FORMATS[selectedFormat()] || FORMATS.svg;
@@ -998,9 +1005,8 @@ Variation 3, Momentum refinement: one subtle upward or forward-facing typographi
   document.querySelectorAll('input[name="outputType"], input[name="effectsLevel"], input[name="outputFormat"]').forEach(function(el){
     el.addEventListener('change', function(){ renderMarks(); });
   });
-  document.querySelectorAll('input[name="provider"]').forEach(function(el){
-    el.addEventListener('change', function(){ updateProviderUI(); renderMarks(); });
-  });
+  var providerSelect = document.getElementById('providerSelect');
+  if(providerSelect) providerSelect.addEventListener('change', function(){ updateProviderUI(); renderMarks(); });
 
   /* Star ratings */
   var starSVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>';
