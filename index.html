@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>Logo Refinement Test App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4f4f2;
+    --surface:#ffffff;
+    --surface-2:#ececea;
+    --ink:#111210;
+    --ink-2:#4a4d48;
+    --ink-3:#7a7e76;
+    --line:#d9dad4;
+    --line-strong:#bdbfb6;
+    --accent:#c2410c;
+    --accent-soft:#fff1e8;
+    --accent-ink:#7c2d12;
+    --good:#166534;
+    --good-bg:#dcfce7;
+    --warn-bg:#fef3c7;
+    --warn-ink:#92400e;
+    --warn-line:#f59e0b;
+    --stage:#ffffff;
+    --stage-line:#e3e4de;
+    --star:#d6d7d0;
+    --star-on:#c2410c;
+    --shadow:0 1px 2px rgba(17,18,16,.06),0 8px 24px rgba(17,18,16,.06);
+    --radius-card:14px;
+    --radius-input:8px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#121311;
+      --surface:#1b1c1a;
+      --surface-2:#232422;
+      --ink:#f2f2ee;
+      --ink-2:#c4c6bf;
+      --ink-3:#8f928a;
+      --line:#333431;
+      --line-strong:#4a4c46;
+      --accent:#fb923c;
+      --accent-soft:#2b1d12;
+      --accent-ink:#fdba74;
+      --good:#86efac;
+      --good-bg:#14291a;
+      --warn-bg:#2b2110;
+      --warn-ink:#fcd34d;
+      --warn-line:#b45309;
+      --stage:#ffffff;
+      --stage-line:#d9dad4;
+      --star:#3f413c;
+      --star-on:#fb923c;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Manrope",system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.5}
+  button,input,select,textarea{font:inherit;color:inherit}
+  button,[role="button"],select,input:not([type="checkbox"]){min-height:2.25rem}
+  a{color:var(--accent)}
+  .page{max-width:1320px;margin:0 auto;padding:20px 20px 48px}
+  @media(max-width:640px){.page{padding:14px 14px 36px}}
+
+  /* Workflow strip */
+  .workflow{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-card);box-shadow:var(--shadow);padding:14px 16px;margin-bottom:14px}
+  .workflow ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px 0;align-items:center}
+  .workflow li{display:flex;align-items:center;gap:9px;font-weight:700;font-size:.9rem;white-space:nowrap}
+  .workflow li+li::before{content:"";width:22px;height:1px;background:var(--line-strong);margin:0 10px;flex:none}
+  .step-num{width:28px;height:28px;flex:none;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:.82rem;font-weight:800}
+  .workflow li:first-child .step-num{background:var(--accent);color:#fff}
+  @media(max-width:760px){.workflow li{white-space:normal}.workflow li+li::before{width:10px;margin:0 6px}}
+
+  .draft-banner{display:flex;gap:10px;align-items:flex-start;background:var(--accent-soft);border:1px solid var(--accent);border-radius:10px;padding:11px 14px;margin-bottom:18px;font-size:.92rem}
+  .draft-banner strong{color:var(--accent-ink);white-space:nowrap}
+  @media(prefers-color-scheme:dark){.draft-banner strong{color:var(--accent)}}
+
+  h1{font-size:1.65rem;line-height:1.15;letter-spacing:-.02em;margin:2px 0 6px;font-weight:800}
+  .lede{margin:0 0 20px;color:var(--ink-2);max-width:72ch;font-size:1rem}
+  h2{font-size:1.18rem;letter-spacing:-.01em;margin:0 0 4px;font-weight:800}
+  h3{font-size:1rem;margin:0 0 8px;font-weight:800}
+  .sub{color:var(--ink-2);font-size:.92rem;margin:0 0 14px}
+
+  /* Workspace layout */
+  .workspace{display:grid;grid-template-columns:348px minmax(0,1fr);gap:18px;align-items:start}
+  @media(max-width:1020px){.workspace{grid-template-columns:1fr}}
+
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-card);box-shadow:var(--shadow);padding:18px}
+  .panel + .panel{margin-top:0}
+
+  /* Upload form */
+  .dropzone{border:1.5px dashed var(--line-strong);border-radius:12px;background:var(--surface-2);padding:18px 14px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+  .dropzone:hover,.dropzone:focus-visible{border-color:var(--accent);outline:none}
+  .dropzone.dragging{border-color:var(--accent);background:var(--accent-soft)}
+  .dropzone svg{width:34px;height:34px;stroke:var(--ink-3);margin-bottom:6px}
+  .dropzone .dz-title{font-weight:800;font-size:.95rem}
+  .dropzone .dz-hint{color:var(--ink-2);font-size:.84rem;margin-top:2px}
+  .dropzone input{display:block;margin:12px auto 0;max-width:100%;font-size:.85rem;min-height:2.25rem}
+  .dz-wrap{position:relative}
+  .vector-note{margin-top:10px;font-size:.86rem;background:var(--good-bg);color:var(--good);border-radius:var(--radius-input);padding:9px 11px;font-weight:600}
+  @media(prefers-color-scheme:dark){.vector-note{color:var(--good)}}
+  .file-meta{margin-top:10px;font-size:.85rem;color:var(--ink-2);display:none}
+  .file-meta.show{display:block}
+  .file-meta strong{color:var(--ink)}
+  .warning{display:none;margin-top:10px;font-size:.86rem;background:var(--warn-bg);color:var(--warn-ink);border:1px solid var(--warn-line);border-radius:var(--radius-input);padding:9px 11px;font-weight:600}
+  .warning.show{display:block}
+  .source-preview{margin-top:12px;display:none;border:1px solid var(--stage-line);border-radius:10px;background:#fff;padding:16px;min-height:76px;align-items:center;justify-content:center}
+  .source-preview.show{display:flex}
+  .source-preview .mark-slot{max-width:100%}
+  .field{margin-top:16px}
+  .field label,.field legend{display:block;font-weight:700;font-size:.88rem;margin-bottom:6px}
+  .field input[type="text"],.field textarea{width:100%;border:1px solid var(--line-strong);border-radius:var(--radius-input);background:var(--surface);padding:9px 11px;font-size:.95rem}
+  .field textarea{resize:vertical;min-height:64px}
+  .field input:focus,.field textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+  fieldset.field{border:0;padding:0;margin-left:0;margin-right:0}
+  .type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .type-opt{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--line-strong);border-radius:10px;padding:10px 11px;min-height:58px;cursor:pointer;background:var(--surface)}
+  .type-opt input{flex:none;width:18px;height:18px;min-height:18px;margin:2px 0 0;accent-color:var(--accent);cursor:pointer}
+  .type-opt span{display:flex;flex-direction:column;gap:1px}
+  .type-opt span b{font-size:.88rem;line-height:1.25}
+  .type-opt span small{color:var(--ink-3);font-size:.76rem;line-height:1.3}
+  .type-opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
+  .type-opt:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+  .btn{appearance:none;border:1px solid var(--ink);background:var(--ink);color:var(--bg);font-weight:800;border-radius:999px;padding:10px 18px;cursor:pointer;min-height:44px;font-size:.94rem}
+  .btn:hover{opacity:.88}
+  .btn.secondary{background:transparent;color:var(--ink)}
+  .btn.small{padding:6px 13px;min-height:38px;font-size:.86rem}
+  .form-actions{margin-top:18px;display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+  .form-actions .hint{font-size:.82rem;color:var(--ink-3)}
+
+  /* Output */
+  .output-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:5px 10px;border:1px solid var(--line-strong);color:var(--ink-2);background:var(--surface)}
+  .badge.draft{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
+  @media(prefers-color-scheme:dark){.badge.draft{color:var(--accent)}}
+  .output-layout{display:grid;grid-template-columns:minmax(0,1fr) 268px;gap:16px;align-items:start}
+  @media(max-width:1180px){.output-layout{grid-template-columns:1fr}}
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.tiles{grid-template-columns:1fr}}
+  .tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-card);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+  .tile-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px 10px}
+  .tile-head .t-name{font-weight:800;font-size:.97rem;line-height:1.25}
+  .tile-head .t-desc{color:var(--ink-3);font-size:.8rem;margin-top:1px}
+  .stage{background:var(--stage);border-top:1px solid var(--stage-line);border-bottom:1px solid var(--stage-line);min-height:132px;display:flex;align-items:center;justify-content:center;padding:26px 20px;color:#000}
+  .mark-slot{display:flex;align-items:center;justify-content:center;max-width:100%;width:100%}
+  .mark-slot svg{width:100%;max-width:300px;height:auto;max-height:84px;display:block}
+  .mark-slot img{max-width:300px;max-height:84px;width:auto;height:auto;display:block;object-fit:contain}
+  .text-mark{font-weight:800;letter-spacing:.06em;font-size:clamp(1.3rem,3.2vw,1.9rem);color:#000;text-transform:uppercase;line-height:1;white-space:nowrap}
+  .text-mark.empty{color:#9a9c95;font-size:1rem;letter-spacing:0;text-transform:none;font-weight:600}
+  .sizes{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end;padding:12px 14px 4px;background:var(--surface)}
+  .size-cell{display:flex;flex-direction:column;gap:5px;align-items:flex-start;max-width:100%}
+  .size-box{background:#fff;border:1px solid var(--stage-line);border-radius:6px;padding:6px 8px;display:flex;align-items:center;color:#000;max-width:100%}
+  .size-box .inner{display:flex;align-items:center;justify-content:flex-start}
+  .size-box.s16 .inner{height:16px}
+  .size-box.s32 .inner{height:32px}
+  .size-box.s16 .inner svg{height:16px;width:auto;max-width:170px}
+  .size-box.s32 .inner svg{height:32px;width:auto;max-width:220px}
+  .size-box.s16 .inner img{height:16px;width:auto;max-width:170px;object-fit:contain}
+  .size-box.s32 .inner img{height:32px;width:auto;max-width:220px;object-fit:contain}
+  .size-box .inner .text-mark{letter-spacing:.04em;line-height:1}
+  .size-box.s16 .inner .text-mark{font-size:11px}
+  .size-box.s32 .inner .text-mark{font-size:22px}
+  .size-box .inner .text-mark.empty{font-size:.72rem;letter-spacing:0}
+  .size-box.s32 .inner .text-mark.empty{font-size:.8rem}
+  .size-cell label{font-size:.74rem;color:var(--ink-3);font-weight:700}
+  .sizes-note{font-size:.78rem;color:var(--ink-3);padding:6px 14px 10px}
+  .tile-foot{padding:10px 14px 14px;border-top:1px solid var(--line);margin-top:auto}
+  .rating{display:flex;align-items:center;gap:3px;margin-bottom:9px}
+  .rating .r-label{font-size:.82rem;font-weight:700;margin-right:6px;color:var(--ink-2)}
+  .star{appearance:none;background:none;border:0;padding:4px;cursor:pointer;min-height:36px;min-width:36px;display:grid;place-items:center;border-radius:8px}
+  .star svg{width:21px;height:21px;fill:var(--star);stroke:var(--star);transition:fill .12s}
+  .star.on svg{fill:var(--star-on);stroke:var(--star-on)}
+  .star:hover svg{fill:var(--star-on)}
+  .star:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .verdict{width:100%;border:1px solid var(--line-strong);border-radius:var(--radius-input);padding:8px 10px;font-size:.9rem;background:var(--surface)}
+  .verdict:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+
+  .checklist{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-card);box-shadow:var(--shadow);padding:16px}
+  .checklist ul{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:10px}
+  .checklist li{display:flex;gap:9px;font-size:.9rem;line-height:1.45;color:var(--ink-2)}
+  .checklist li b{color:var(--ink)}
+  .check-ico{flex:none;width:20px;height:20px;border-radius:50%;background:var(--good-bg);display:grid;place-items:center;margin-top:1px}
+  .check-ico svg{width:11px;height:11px;stroke:var(--good);stroke-width:3;fill:none}
+  .checklist .foot-note{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:.84rem;color:var(--ink-2)}
+
+  /* Prompts */
+  .prompts{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-card);box-shadow:var(--shadow);padding:18px}
+  .tabs{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;border-bottom:1px solid var(--line);padding-bottom:12px}
+  .tab{appearance:none;border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:700;font-size:.88rem;cursor:pointer;min-height:40px;display:inline-flex;align-items:center;gap:7px}
+  .tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .tab .rec{display:none;font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:var(--accent);color:#fff;border-radius:999px;padding:3px 7px}
+  .tab.recommended{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+  .tab.recommended .rec{display:inline-block}
+  .tab[aria-selected="true"].recommended{box-shadow:inset 0 0 0 1px var(--accent)}
+  .tab-panel{display:none;padding-top:16px}
+  .tab-panel.active{display:block}
+  .panel-meta{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .version{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;font-weight:700}
+  .version .v-pill{background:var(--surface-2);border:1px solid var(--line-strong);border-radius:999px;padding:4px 11px;font-family:"JetBrains Mono",monospace;font-size:.84rem}
+  .version button{appearance:none;border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:700;font-size:.83rem;cursor:pointer;min-height:36px}
+  .version button:hover{border-color:var(--accent);color:var(--accent)}
+  .prompt-area{width:100%;min-height:300px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);padding:13px 14px;font-family:"JetBrains Mono",monospace;font-size:.84rem;line-height:1.65;resize:vertical}
+  .prompt-area:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+  .change-note{margin-top:10px}
+  .change-note label{display:block;font-weight:700;font-size:.86rem;margin-bottom:5px}
+  .change-note input{width:100%;border:1px solid var(--line-strong);border-radius:var(--radius-input);padding:9px 11px;font-size:.92rem;background:var(--surface)}
+  .change-note input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+  .rec-note{display:none;margin-bottom:10px;font-size:.88rem;background:var(--accent-soft);border:1px solid var(--accent);color:var(--accent-ink);border-radius:var(--radius-input);padding:9px 12px;font-weight:600}
+  .rec-note.show{display:block}
+  @media(prefers-color-scheme:dark){.rec-note{color:var(--accent)}}
+  footer{margin-top:22px;color:var(--ink-3);font-size:.84rem;line-height:1.6;max-width:80ch}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="workflow" aria-label="Workflow">
+    <ol>
+      <li><span class="step-num">1</span> Upload vector</li>
+      <li><span class="step-num">2</span> Pick input type</li>
+      <li><span class="step-num">3</span> Choose and edit prompt</li>
+      <li><span class="step-num">4</span> Review drafts</li>
+      <li><span class="step-num">5</span> Rate and iterate</li>
+    </ol>
+  </div>
+
+  <div class="draft-banner" role="note">
+    <strong>Draft only</strong>
+    <span>Approximate drafts for prompt testing and exploration. Nothing generated or previewed here is deployed, production ready, or a replacement for the real vector source file.</span>
+  </div>
+
+  <h1>Logo refinement test bench</h1>
+  <p class="lede">The job here is prompt iteration: match the right prompt to the right type of mark, test it against vector input, judge the draft at real sizes, rate it, and improve the prompt. Refinement only, never a redesign. The mark should stay instantly recognizable while getting smoother, better spaced, and more confident.</p>
+
+  <div class="workspace">
+    <!-- LEFT: upload form -->
+    <aside class="panel" aria-labelledby="source-h">
+      <h2 id="source-h">Logo source</h2>
+      <p class="sub">Start with the real mark. Vector input is what makes refinement testable.</p>
+
+      <div class="dz-wrap">
+        <div class="dropzone" id="dropzone" aria-label="Upload a logo file, SVG preferred">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
+          <div class="dz-title">Drop your logo here, or click to browse</div>
+          <div class="dz-hint">SVG preferred. PNG, JPG and WebP are accepted with a warning.</div>
+          <input type="file" id="fileInput" accept=".svg,.png,.jpg,.jpeg,.webp,.gif,image/svg+xml,image/png,image/jpeg,image/webp" aria-label="Choose logo file">
+        </div>
+      </div>
+
+      <div class="vector-note">Input should be vector based (SVG) for best results. Vector paths let a prompt talk about curves, joins, terminals and spacing in terms a model can actually act on. Raster files flatten all of that away.</div>
+
+      <div class="warning" id="rasterWarning" role="alert">Raster input gives worse results. This file has no editable paths, so curve, kerning and stroke feedback will be guesswork. Re-export as SVG from your source file if you can.</div>
+
+      <div class="file-meta" id="fileMeta"></div>
+      <div class="source-preview" id="sourcePreview" aria-label="Uploaded logo preview"></div>
+
+      <div class="field">
+        <label for="brandName">Brand name</label>
+        <input type="text" id="brandName" value="RANKPLAN" autocomplete="off" spellcheck="false">
+      </div>
+
+      <fieldset class="field">
+        <legend>Input type</legend>
+        <div class="type-grid" id="typeGrid">
+          <label class="type-opt">
+            <input type="radio" name="inputType" value="wordmark" checked>
+            <span><b>Wordmark</b><small>Text only, no symbol</small></span>
+          </label>
+          <label class="type-opt">
+            <input type="radio" name="inputType" value="lettermark">
+            <span><b>Lettermark</b><small>Initials or monogram</small></span>
+          </label>
+          <label class="type-opt">
+            <input type="radio" name="inputType" value="symbol">
+            <span><b>Symbol / icon mark</b><small>Graphic mark only</small></span>
+          </label>
+          <label class="type-opt">
+            <input type="radio" name="inputType" value="combination">
+            <span><b>Combination mark</b><small>Symbol plus wordmark</small></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label for="notesField">Notes for this test</label>
+        <textarea id="notesField" placeholder="For example: watch the two A letterforms and the final N at 16px."></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn" id="updateBtn">Update draft previews</button>
+        <span class="hint">Runs in this browser only. No file leaves the page.</span>
+      </div>
+    </aside>
+
+    <!-- RIGHT: output variants -->
+    <section aria-labelledby="output-h">
+      <div class="output-head">
+        <div>
+          <h2 id="output-h">Output variants</h2>
+          <p class="sub" style="margin:0">Four tiles, one source. Variant tiles are draft slots holding the uploaded mark until a real generation step is wired in.</p>
+        </div>
+        <span class="badge draft">Draft slots, not generated</span>
+      </div>
+
+      <div class="output-layout">
+        <div class="tiles" id="tiles">
+          <!-- Tile template repeated 4 times -->
+          <article class="tile" data-tile="original">
+            <div class="tile-head">
+              <div><div class="t-name">Original</div><div class="t-desc">The uploaded mark, untouched</div></div>
+              <span class="badge">Source</span>
+            </div>
+            <div class="stage"><div class="mark-slot" data-mark></div></div>
+            <div class="sizes">
+              <div class="size-cell"><div class="size-box s16"><div class="inner" data-mark-small></div></div><label>16px</label></div>
+              <div class="size-cell"><div class="size-box s32"><div class="inner" data-mark-small></div></div><label>32px</label></div>
+            </div>
+            <p class="sizes-note">Favicon scale check: if it fails here, the refinement has not worked.</p>
+            <div class="tile-foot">
+              <div class="rating" data-rating aria-label="Rating for Original"></div>
+              <input type="text" class="verdict" data-verdict placeholder="One-line verdict, for example: baseline, spacing already uneven" aria-label="Verdict for Original">
+            </div>
+          </article>
+
+          <article class="tile" data-tile="minimal">
+            <div class="tile-head">
+              <div><div class="t-name">Minimal refinement</div><div class="t-desc">Flaws and spacing corrected only</div></div>
+              <span class="badge draft">Draft</span>
+            </div>
+            <div class="stage"><div class="mark-slot" data-mark></div></div>
+            <div class="sizes">
+              <div class="size-cell"><div class="size-box s16"><div class="inner" data-mark-small></div></div><label>16px</label></div>
+              <div class="size-cell"><div class="size-box s32"><div class="inner" data-mark-small></div></div><label>32px</label></div>
+            </div>
+            <p class="sizes-note">Favicon scale check: counters should stay open, nothing should fill in.</p>
+            <div class="tile-foot">
+              <div class="rating" data-rating aria-label="Rating for Minimal refinement"></div>
+              <input type="text" class="verdict" data-verdict placeholder="One-line verdict, for example: safest, cue may be too weak" aria-label="Verdict for Minimal refinement">
+            </div>
+          </article>
+
+          <article class="tile" data-tile="precision">
+            <div class="tile-head">
+              <div><div class="t-name">Precision refinement</div><div class="t-desc">Sharper terminals, engineered feel</div></div>
+              <span class="badge draft">Draft</span>
+            </div>
+            <div class="stage"><div class="mark-slot" data-mark></div></div>
+            <div class="sizes">
+              <div class="size-cell"><div class="size-box s16"><div class="inner" data-mark-small></div></div><label>16px</label></div>
+              <div class="size-cell"><div class="size-box s32"><div class="inner" data-mark-small></div></div><label>32px</label></div>
+            </div>
+            <p class="sizes-note">Favicon scale check: sharp details are the first thing lost at this size.</p>
+            <div class="tile-foot">
+              <div class="rating" data-rating aria-label="Rating for Precision refinement"></div>
+              <input type="text" class="verdict" data-verdict placeholder="One-line verdict, for example: crisp at full size, brittle at 16px" aria-label="Verdict for Precision refinement">
+            </div>
+          </article>
+
+          <article class="tile" data-tile="momentum">
+            <div class="tile-head">
+              <div><div class="t-name">Momentum refinement</div><div class="t-desc">One subtle forward or upward cue</div></div>
+              <span class="badge draft">Draft</span>
+            </div>
+            <div class="stage"><div class="mark-slot" data-mark></div></div>
+            <div class="sizes">
+              <div class="size-cell"><div class="size-box s16"><div class="inner" data-mark-small></div></div><label>16px</label></div>
+              <div class="size-cell"><div class="size-box s32"><div class="inner" data-mark-small></div></div><label>32px</label></div>
+            </div>
+            <p class="sizes-note">Favicon scale check: the cue must never cost legibility.</p>
+            <div class="tile-foot">
+              <div class="rating" data-rating aria-label="Rating for Momentum refinement"></div>
+              <input type="text" class="verdict" data-verdict placeholder="One-line verdict, for example: cue reads well, watch the final N" aria-label="Verdict for Momentum refinement">
+            </div>
+          </article>
+        </div>
+
+        <aside class="checklist" aria-labelledby="checklist-h">
+          <h3 id="checklist-h">Ideal result checklist</h3>
+          <p class="sub" style="margin:0">Judge every draft against this list, taken from the refinement brief. A draft that breaks any line has failed, however good it looks at full size.</p>
+          <ul>
+            <li><span class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 7"/></svg></span><span><b>Recognizable:</b> silhouette and spelling unchanged, instantly recognizable as the same mark.</span></li>
+            <li><span class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 7"/></svg></span><span><b>Spacing:</b> even, rhythmic optical spacing between every pair, not default font spacing.</span></li>
+            <li><span class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 7"/></svg></span><span><b>Counters:</b> open counters and apertures, crisp and legible at small sizes.</span></li>
+            <li><span class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 7"/></svg></span><span><b>Terminals:</b> unified terminal treatments, every letter ending intentional and consistent.</span></li>
+            <li><span class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 7"/></svg></span><span><b>One cue at most:</b> a single subtle ownable refinement, only if it helps without harming legibility.</span></li>
+            <li><span class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 7"/></svg></span><span><b>No effects:</b> no gradients, shadows, outlines, swashes, arrows, charts or icons added.</span></li>
+            <li><span class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 7"/></svg></span><span><b>Vector clean:</b> clean edges and consistent stroke logic, suitable for vector reconstruction.</span></li>
+          </ul>
+          <p class="foot-note">Presentation rule from the brief: solid black on clean white, single line, generous clear space. That is why every tile stage is plain white, whatever the page theme.</p>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <!-- BELOW: prompt options -->
+  <section class="prompts" aria-labelledby="prompts-h">
+    <h2 id="prompts-h">Prompt options</h2>
+    <p class="sub" style="max-width:78ch">This is the point of the app. Each prompt lives in an editable tab: change the wording, bump the version, note what you changed, run the same vector input again, and rate the new draft against the checklist. The tab matching your selected input type is marked Recommended.</p>
+
+    <div class="tabs" role="tablist" aria-label="Prompt tabs" id="tabList">
+      <button type="button" class="tab" role="tab" id="tab-master" aria-controls="panel-master" aria-selected="true" data-panel="panel-master">Master brief</button>
+      <button type="button" class="tab" role="tab" id="tab-wordmark" aria-controls="panel-wordmark" aria-selected="false" data-panel="panel-wordmark" data-type="wordmark">Wordmark <span class="rec">Recommended</span></button>
+      <button type="button" class="tab" role="tab" id="tab-lettermark" aria-controls="panel-lettermark" aria-selected="false" data-panel="panel-lettermark" data-type="lettermark">Lettermark <span class="rec">Recommended</span></button>
+      <button type="button" class="tab" role="tab" id="tab-symbol" aria-controls="panel-symbol" aria-selected="false" data-panel="panel-symbol" data-type="symbol">Symbol / icon <span class="rec">Recommended</span></button>
+      <button type="button" class="tab" role="tab" id="tab-combination" aria-controls="panel-combination" aria-selected="false" data-panel="panel-combination" data-type="combination">Combination <span class="rec">Recommended</span></button>
+      <button type="button" class="tab" role="tab" id="tab-minimal" aria-controls="panel-minimal" aria-selected="false" data-panel="panel-minimal">Minimal refinement</button>
+      <button type="button" class="tab" role="tab" id="tab-precision" aria-controls="panel-precision" aria-selected="false" data-panel="panel-precision">Precision refinement</button>
+      <button type="button" class="tab" role="tab" id="tab-momentum" aria-controls="panel-momentum" aria-selected="false" data-panel="panel-momentum">Momentum refinement</button>
+    </div>
+
+    <!-- Master -->
+    <div class="tab-panel active" role="tabpanel" id="panel-master" aria-labelledby="tab-master" data-panel>
+      <div class="panel-meta">
+        <span class="version">Prompt version <span class="v-pill" data-version>v1</span> <button type="button" data-bump>Bump to next version</button></span>
+        <button type="button" class="btn secondary small" data-copy>Copy prompt</button>
+      </div>
+      <textarea class="prompt-area" data-prompt aria-label="Master brief prompt">Refine the attached existing wordmark. Do not redesign the logo from scratch, change the brand name, add a symbol, alter the overall silhouette, or introduce a new visual direction. Preserve the current letterforms, proportions, case, and core personality. Treat this as a professional typographic refinement pass: make the existing wordmark feel smoother, more balanced, more confident, and more distinctive while remaining immediately recognizable.
+- Smooth any awkward curves, kinks, joins, or inconsistent stroke transitions.
+- Unify terminal treatments so every letter ending feels intentional and consistent.
+- Correct optical weight: ensure horizontal, vertical, and diagonal strokes feel balanced; slightly adjust thin joins, rounded forms, and pointed apexes where needed.
+- Improve the counters and apertures so the letters remain open, crisp, and legible at small sizes.
+- Refine the spacing between every letter pair using optical kerning. The negative space should feel even and rhythmic; do not rely on the original font's default spacing.
+- Check the two A letterforms, the K junction, and the final N especially closely.
+- Add at most one subtle, ownable refinement, only if it improves the mark without harming legibility.
+- Keep the refinement restrained. No gradients, shadows, outlines, decorative swashes, arrows, charts, icons, or unnecessary effects.
+Presentation: solid black on a clean white background, single line horizontally set uppercase wordmark, generous clear space, no mockups, no tagline, no extra words. Output should be suitable for vector reconstruction: clean edges, consistent stroke logic, balanced spacing, strong readability at favicon, app-icon, website-header, and signage sizes.</textarea>
+      <div class="change-note"><label>What changed in this version</label><input type="text" placeholder="For example: tightened the small-size legibility line, added the K junction check"></div>
+    </div>
+
+    <!-- Wordmark -->
+    <div class="tab-panel" role="tabpanel" id="panel-wordmark" aria-labelledby="tab-wordmark" data-panel data-type-panel="wordmark">
+      <div class="rec-note" data-rec-note>Recommended for your selected input type: Wordmark. Start from this prompt, then layer a variation (Minimal, Precision or Momentum) on top.</div>
+      <div class="panel-meta">
+        <span class="version">Prompt version <span class="v-pill" data-version>v1</span> <button type="button" data-bump>Bump to next version</button></span>
+        <button type="button" class="btn secondary small" data-copy>Copy prompt</button>
+      </div>
+      <textarea class="prompt-area" data-prompt aria-label="Wordmark prompt">Refine the attached vector wordmark (text only, no symbol). Do not redesign it, change the spelling, case, typeface character, proportions or silhouette. Preserve the current letterforms so the wordmark stays instantly recognizable, and treat this as a professional typographic refinement pass on the vector paths.
+- Smooth awkward curves, kinks, joins and inconsistent stroke transitions.
+- Unify terminal treatments so every letter ending feels intentional and consistent.
+- Balance optical weight across horizontal, vertical and diagonal strokes; adjust thin joins, rounded forms and pointed apexes where needed.
+- Open the counters and apertures so letters stay crisp and legible at 16px and 32px.
+- Hand kern every letter pair using optical spacing. Negative space should feel even and rhythmic; never rely on default font spacing.
+- Check repeated letters especially closely so identical letters are truly identical in treatment.
+- Add at most one subtle, ownable refinement, only if it improves the mark without harming legibility.
+- No gradients, shadows, outlines, decorative swashes or effects.
+Presentation: solid black on a clean white background, single line, generous clear space, no mockups, no tagline. Output must be suitable for vector reconstruction: clean edges, consistent stroke logic, strong readability from favicon to signage.</textarea>
+      <div class="change-note"><label>What changed in this version</label><input type="text" placeholder="For example: added explicit 16px and 32px test to the counters line"></div>
+    </div>
+
+    <!-- Lettermark -->
+    <div class="tab-panel" role="tabpanel" id="panel-lettermark" aria-labelledby="tab-lettermark" data-panel data-type-panel="lettermark">
+      <div class="rec-note" data-rec-note>Recommended for your selected input type: Lettermark. Start from this prompt, then layer a variation on top.</div>
+      <div class="panel-meta">
+        <span class="version">Prompt version <span class="v-pill" data-version>v1</span> <button type="button" data-bump>Bump to next version</button></span>
+        <button type="button" class="btn secondary small" data-copy>Copy prompt</button>
+      </div>
+      <textarea class="prompt-area" data-prompt aria-label="Lettermark prompt">Refine the attached vector lettermark (initials or monogram). Do not redesign it, change the letters, reading order or overall silhouette. Preserve the current construction so the mark stays instantly recognizable, and treat this as a refinement pass on the vector paths.
+- Clarify any interlocks, overlaps and intersections so joins read cleanly and never create accidental shapes.
+- Unify stroke weight, terminal treatments, corner radii and angles across all letters.
+- Balance positive and negative space; open internal counters and tight gaps so the mark does not fill in at 16px.
+- Keep the geometry simple and the construction consistent, as if drawn on one grid with one stroke logic.
+- Smooth awkward curves and correct optical weight so no letter feels heavier or lighter than the others.
+- Add at most one subtle, ownable refinement, only if it improves the mark without harming legibility.
+- No new letters, no extra symbol, no gradients, shadows, outlines or effects.
+Presentation: solid black on a clean white background, generous clear space, no mockups, no tagline. Output must be suitable for vector reconstruction: clean edges, strong readability from favicon to signage.</textarea>
+      <div class="change-note"><label>What changed in this version</label><input type="text" placeholder="For example: strengthened the line about accidental shapes at joins"></div>
+    </div>
+
+    <!-- Symbol -->
+    <div class="tab-panel" role="tabpanel" id="panel-symbol" aria-labelledby="tab-symbol" data-panel data-type-panel="symbol">
+      <div class="rec-note" data-rec-note>Recommended for your selected input type: Symbol / icon mark. Start from this prompt, then layer a variation on top.</div>
+      <div class="panel-meta">
+        <span class="version">Prompt version <span class="v-pill" data-version>v1</span> <button type="button" data-bump>Bump to next version</button></span>
+        <button type="button" class="btn secondary small" data-copy>Copy prompt</button>
+      </div>
+      <textarea class="prompt-area" data-prompt aria-label="Symbol prompt">Refine the attached vector symbol or icon mark (graphic mark only, no wordmark). Do not redesign it, change the core idea, silhouette or proportions. Preserve what makes it recognizable, and treat this as a refinement pass on the vector paths.
+- Simplify toward the fewest clean shapes that still carry the idea; remove fussy detail that will not survive small sizes.
+- Align construction to a consistent geometry: shared angles, consistent corner radii, one clear stroke or shape logic throughout.
+- Balance positive and negative space; open tight gaps and narrow bridges so the mark holds together at 16px and 32px.
+- Smooth awkward curves, kinks and joins; correct optical weight so no part feels heavier than the whole.
+- Check the silhouette alone, in solid black with no detail: it should still read clearly.
+- Add at most one subtle, ownable refinement, only if it improves the mark without harming legibility.
+- No new concept, no lettering, no gradients, shadows, outlines or effects.
+Presentation: solid black on a clean white background, generous clear space, no mockups, no tagline. Output must be suitable for vector reconstruction: clean edges, strong readability from favicon to signage.</textarea>
+      <div class="change-note"><label>What changed in this version</label><input type="text" placeholder="For example: added the silhouette-only check"></div>
+    </div>
+
+    <!-- Combination -->
+    <div class="tab-panel" role="tabpanel" id="panel-combination" aria-labelledby="tab-combination" data-panel data-type-panel="combination">
+      <div class="rec-note" data-rec-note>Recommended for your selected input type: Combination mark. Start from this prompt, then layer a variation on top.</div>
+      <div class="panel-meta">
+        <span class="version">Prompt version <span class="v-pill" data-version>v1</span> <button type="button" data-bump>Bump to next version</button></span>
+        <button type="button" class="btn secondary small" data-copy>Copy prompt</button>
+      </div>
+      <textarea class="prompt-area" data-prompt aria-label="Combination mark prompt">Refine the attached vector combination mark (symbol plus wordmark lockup). Do not redesign it, change the spelling, case, symbol idea or overall lockup silhouette. Preserve both elements so the brand stays instantly recognizable, and treat this as a refinement pass on the vector paths.
+- Refine the symbol and the wordmark separately first: smooth curves and joins, unify terminals and stroke logic, open counters and apertures, and hand kern every letter pair.
+- Then fix the lockup itself: alignment, relative scale of symbol to text, and the gap between symbol and wordmark. Spacing must feel optical, not measured.
+- Make symbol and letterforms feel like one system: shared terminal character, compatible stroke weight, consistent radii and angles.
+- Balance the whole lockup so neither element dominates; check it at 16px, where the wordmark usually fails first.
+- Add at most one subtle, ownable refinement across the whole lockup, only if it improves the mark without harming legibility.
+- No new symbol, no new typeface direction, no gradients, shadows, outlines or effects.
+Presentation: solid black on a clean white background, generous clear space, no mockups, no tagline. Output must be suitable for vector reconstruction: clean edges, strong readability from favicon to signage.</textarea>
+      <div class="change-note"><label>What changed in this version</label><input type="text" placeholder="For example: made the lockup gap an explicit optical spacing test"></div>
+    </div>
+
+    <!-- Minimal variation -->
+    <div class="tab-panel" role="tabpanel" id="panel-minimal" aria-labelledby="tab-minimal" data-panel>
+      <div class="panel-meta">
+        <span class="version">Prompt version <span class="v-pill" data-version>v1</span> <button type="button" data-bump>Bump to next version</button></span>
+        <button type="button" class="btn secondary small" data-copy>Copy prompt</button>
+      </div>
+      <textarea class="prompt-area" data-prompt aria-label="Minimal refinement prompt">Refine the attached existing wordmark. Do not redesign the logo from scratch, change the brand name, add a symbol, alter the overall silhouette, or introduce a new visual direction. Preserve the current letterforms, proportions, case, and core personality. Treat this as a professional typographic refinement pass: make the existing wordmark feel smoother, more balanced, more confident, and more distinctive while remaining immediately recognizable.
+- Smooth any awkward curves, kinks, joins, or inconsistent stroke transitions.
+- Unify terminal treatments so every letter ending feels intentional and consistent.
+- Correct optical weight: ensure horizontal, vertical, and diagonal strokes feel balanced; slightly adjust thin joins, rounded forms, and pointed apexes where needed.
+- Improve the counters and apertures so the letters remain open, crisp, and legible at small sizes.
+- Refine the spacing between every letter pair using optical kerning. The negative space should feel even and rhythmic; do not rely on the original font's default spacing.
+- Check the two A letterforms, the K junction, and the final N especially closely.
+- Add at most one subtle, ownable refinement, only if it improves the mark without harming legibility.
+- Keep the refinement restrained. No gradients, shadows, outlines, decorative swashes, arrows, charts, icons, or unnecessary effects.
+Presentation: solid black on a clean white background, single line horizontally set uppercase wordmark, generous clear space, no mockups, no tagline, no extra words. Output should be suitable for vector reconstruction: clean edges, consistent stroke logic, balanced spacing, strong readability at favicon, app-icon, website-header, and signage sizes.
+Variation 1, Minimal refinement: the cleanest, safest version. Correct the flaws and spacing only; introduce no new cue.</textarea>
+      <div class="change-note"><label>What changed in this version</label><input type="text" placeholder="For example: made the no new cue rule stricter"></div>
+    </div>
+
+    <!-- Precision variation -->
+    <div class="tab-panel" role="tabpanel" id="panel-precision" aria-labelledby="tab-precision" data-panel>
+      <div class="panel-meta">
+        <span class="version">Prompt version <span class="v-pill" data-version>v1</span> <button type="button" data-bump>Bump to next version</button></span>
+        <button type="button" class="btn secondary small" data-copy>Copy prompt</button>
+      </div>
+      <textarea class="prompt-area" data-prompt aria-label="Precision refinement prompt">Refine the attached existing wordmark. Do not redesign the logo from scratch, change the brand name, add a symbol, alter the overall silhouette, or introduce a new visual direction. Preserve the current letterforms, proportions, case, and core personality. Treat this as a professional typographic refinement pass: make the existing wordmark feel smoother, more balanced, more confident, and more distinctive while remaining immediately recognizable.
+- Smooth any awkward curves, kinks, joins, or inconsistent stroke transitions.
+- Unify terminal treatments so every letter ending feels intentional and consistent.
+- Correct optical weight: ensure horizontal, vertical, and diagonal strokes feel balanced; slightly adjust thin joins, rounded forms, and pointed apexes where needed.
+- Improve the counters and apertures so the letters remain open, crisp, and legible at small sizes.
+- Refine the spacing between every letter pair using optical kerning. The negative space should feel even and rhythmic; do not rely on the original font's default spacing.
+- Check the two A letterforms, the K junction, and the final N especially closely.
+- Add at most one subtle, ownable refinement, only if it improves the mark without harming legibility.
+- Keep the refinement restrained. No gradients, shadows, outlines, decorative swashes, arrows, charts, icons, or unnecessary effects.
+Presentation: solid black on a clean white background, single line horizontally set uppercase wordmark, generous clear space, no mockups, no tagline, no extra words. Output should be suitable for vector reconstruction: clean edges, consistent stroke logic, balanced spacing, strong readability at favicon, app-icon, website-header, and signage sizes.
+Variation 2, Precision refinement: sharper terminals and more engineered details; a precise, technical feel.</textarea>
+      <div class="change-note"><label>What changed in this version</label><input type="text" placeholder="For example: pushed terminal sharpness, added small-size guardrail"></div>
+    </div>
+
+    <!-- Momentum variation -->
+    <div class="tab-panel" role="tabpanel" id="panel-momentum" aria-labelledby="tab-momentum" data-panel>
+      <div class="panel-meta">
+        <span class="version">Prompt version <span class="v-pill" data-version>v1</span> <button type="button" data-bump>Bump to next version</button></span>
+        <button type="button" class="btn secondary small" data-copy>Copy prompt</button>
+      </div>
+      <textarea class="prompt-area" data-prompt aria-label="Momentum refinement prompt">Refine the attached existing wordmark. Do not redesign the logo from scratch, change the brand name, add a symbol, alter the overall silhouette, or introduce a new visual direction. Preserve the current letterforms, proportions, case, and core personality. Treat this as a professional typographic refinement pass: make the existing wordmark feel smoother, more balanced, more confident, and more distinctive while remaining immediately recognizable.
+- Smooth any awkward curves, kinks, joins, or inconsistent stroke transitions.
+- Unify terminal treatments so every letter ending feels intentional and consistent.
+- Correct optical weight: ensure horizontal, vertical, and diagonal strokes feel balanced; slightly adjust thin joins, rounded forms, and pointed apexes where needed.
+- Improve the counters and apertures so the letters remain open, crisp, and legible at small sizes.
+- Refine the spacing between every letter pair using optical kerning. The negative space should feel even and rhythmic; do not rely on the original font's default spacing.
+- Check the two A letterforms, the K junction, and the final N especially closely.
+- Add at most one subtle, ownable refinement, only if it improves the mark without harming legibility.
+- Keep the refinement restrained. No gradients, shadows, outlines, decorative swashes, arrows, charts, icons, or unnecessary effects.
+Presentation: solid black on a clean white background, single line horizontally set uppercase wordmark, generous clear space, no mockups, no tagline, no extra words. Output should be suitable for vector reconstruction: clean edges, consistent stroke logic, balanced spacing, strong readability at favicon, app-icon, website-header, and signage sizes.
+Variation 3, Momentum refinement: one subtle upward or forward-facing typographic cue that suggests growth and forward motion, without harming legibility.</textarea>
+      <div class="change-note"><label>What changed in this version</label><input type="text" placeholder="For example: limited the cue to a single letter only"></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>How to run a test: upload the SVG, pick the input type, open the recommended prompt tab and copy the prompt into your image model with the SVG attached, paste or generate drafts elsewhere, then come back and rate each tile here against the checklist. Ratings and notes live in this page session only, so copy anything you want to keep. The hard problem this bench is built for: turning a world class designer's tacit judgment (optical corrections, spacing, restraint) into prompt wording a model can actually follow, one version at a time.</p>
+    <p>Muse is a trademark of Meta Platforms, Inc. Rankplan is not affiliated with or endorsed by Meta.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var fileInput = document.getElementById('fileInput');
+  var dropzone = document.getElementById('dropzone');
+  var fileMeta = document.getElementById('fileMeta');
+  var rasterWarning = document.getElementById('rasterWarning');
+  var sourcePreview = document.getElementById('sourcePreview');
+  var brandInput = document.getElementById('brandName');
+  var updateBtn = document.getElementById('updateBtn');
+
+  var state = { kind: 'text', svgText: '', rasterUrl: '', fileName: '' };
+
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; });
+  }
+
+  function markHTML(small){
+    if(state.kind === 'svg' && state.svgText){
+      return state.svgText;
+    }
+    if(state.kind === 'raster' && state.rasterUrl){
+      return '<img src="' + state.rasterUrl + '" alt="Uploaded logo">';
+    }
+    var name = (brandInput.value || '').trim();
+    if(!name){
+      return '<span class="text-mark empty">Upload an SVG to begin</span>';
+    }
+    return '<span class="text-mark">' + escapeHtml(name) + '</span>';
+  }
+
+  function renderMarks(){
+    var mains = document.querySelectorAll('[data-mark]');
+    for(var i=0;i<mains.length;i++){ mains[i].innerHTML = markHTML(false); }
+    var smalls = document.querySelectorAll('[data-mark-small]');
+    for(var j=0;j<smalls.length;j++){ smalls[j].innerHTML = markHTML(true); }
+    if(state.kind === 'text'){
+      sourcePreview.classList.remove('show');
+      sourcePreview.innerHTML = '';
+    } else {
+      sourcePreview.classList.add('show');
+      sourcePreview.innerHTML = '<div class="mark-slot">' + markHTML(false) + '</div>';
+    }
+  }
+
+  function handleFile(file){
+    if(!file) return;
+    state.fileName = file.name;
+    var lower = file.name.toLowerCase();
+    var isSvg = file.type === 'image/svg+xml' || lower.endsWith('.svg');
+    var sizeKb = Math.max(1, Math.round(file.size/1024));
+    fileMeta.classList.add('show');
+    if(isSvg){
+      rasterWarning.classList.remove('show');
+      var reader = new FileReader();
+      reader.onload = function(){
+        var text = String(reader.result || '');
+        // Basic guard: only keep the svg element itself
+        var start = text.indexOf('<svg');
+        var end = text.lastIndexOf('</svg>');
+        if(start >= 0 && end > start){
+          text = text.slice(start, end + 6);
+          // Force black presentation per the brief unless the file defines its own fills:
+          // leave fills untouched, just ensure it scales.
+          text = text.replace('<svg', '<svg role="img" aria-label="Uploaded logo" preserveAspectRatio="xMidYMid meet"');
+          state.kind = 'svg';
+          state.svgText = text;
+          state.rasterUrl = '';
+          fileMeta.innerHTML = '<strong>' + escapeHtml(file.name) + '</strong> &middot; SVG vector &middot; ' + sizeKb + ' KB &middot; rendered inline in all four tiles.';
+        } else {
+          fileMeta.innerHTML = '<strong>' + escapeHtml(file.name) + '</strong> could not be read as an SVG. Try exporting again as a plain SVG.';
+          state.kind = 'text'; state.svgText = '';
+        }
+        renderMarks();
+      };
+      reader.readAsText(file);
+    } else {
+      rasterWarning.classList.add('show');
+      var r2 = new FileReader();
+      r2.onload = function(){
+        state.kind = 'raster';
+        state.rasterUrl = String(r2.result || '');
+        state.svgText = '';
+        fileMeta.innerHTML = '<strong>' + escapeHtml(file.name) + '</strong> &middot; raster image &middot; ' + sizeKb + ' KB &middot; shown for layout only, see the warning above.';
+        renderMarks();
+      };
+      r2.readAsDataURL(file);
+    }
+  }
+
+  dropzone.addEventListener('click', function(e){ if(e.target === fileInput) return; fileInput.click(); });
+  fileInput.addEventListener('change', function(){ handleFile(fileInput.files[0]); });
+  ['dragenter','dragover'].forEach(function(ev){ dropzone.addEventListener(ev, function(e){ e.preventDefault(); dropzone.classList.add('dragging'); }); });
+  ['dragleave','drop'].forEach(function(ev){ dropzone.addEventListener(ev, function(e){ e.preventDefault(); dropzone.classList.remove('dragging'); }); });
+  dropzone.addEventListener('drop', function(e){
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    handleFile(f);
+  });
+  brandInput.addEventListener('input', function(){ if(state.kind === 'text') renderMarks(); });
+  updateBtn.addEventListener('click', function(){ renderMarks(); });
+
+  /* Star ratings */
+  var starSVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>';
+  document.querySelectorAll('[data-rating]').forEach(function(container){
+    var label = document.createElement('span');
+    label.className = 'r-label';
+    label.textContent = 'Rate this draft';
+    container.appendChild(label);
+    var value = 0;
+    var stars = [];
+    for(var i=1;i<=5;i++){
+      (function(n){
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'star';
+        b.innerHTML = starSVG;
+        b.setAttribute('aria-label', n + ' star' + (n>1?'s':''));
+        b.addEventListener('click', function(){
+          value = (value === n) ? 0 : n;
+          stars.forEach(function(s, idx){ s.classList.toggle('on', idx < value); });
+          label.textContent = value ? ('Rated ' + value + ' / 5') : 'Rate this draft';
+        });
+        stars.push(b);
+        container.appendChild(b);
+      })(i);
+    }
+  });
+
+  /* Tabs */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('[data-panel]'));
+  function activateTab(tab){
+    tabs.forEach(function(t){ t.setAttribute('aria-selected', t === tab ? 'true' : 'false'); });
+    panels.forEach(function(p){ p.classList.toggle('active', p.id === tab.getAttribute('data-panel')); });
+  }
+  tabs.forEach(function(tab){ tab.addEventListener('click', function(){ activateTab(tab); }); });
+
+  /* Recommended tab follows input type */
+  function syncRecommended(){
+    var checked = document.querySelector('input[name="inputType"]:checked');
+    var type = checked ? checked.value : 'wordmark';
+    tabs.forEach(function(t){ t.classList.toggle('recommended', t.getAttribute('data-type') === type); });
+    document.querySelectorAll('[data-type-panel]').forEach(function(p){
+      var note = p.querySelector('[data-rec-note]');
+      if(note) note.classList.toggle('show', p.getAttribute('data-type-panel') === type);
+    });
+  }
+  document.querySelectorAll('input[name="inputType"]').forEach(function(r){ r.addEventListener('change', syncRecommended); });
+  syncRecommended();
+
+  /* Version bump + copy, per panel */
+  document.querySelectorAll('[data-panel]').forEach(function(panel){
+    var pill = panel.querySelector('[data-version]');
+    var bump = panel.querySelector('[data-bump]');
+    if(bump && pill){
+      bump.addEventListener('click', function(){
+        var n = parseInt(pill.textContent.replace(/[^0-9]/g,''), 10) || 1;
+        pill.textContent = 'v' + (n + 1);
+        bump.textContent = 'Bump to next version';
+      });
+    }
+    var copyBtn = panel.querySelector('[data-copy]');
+    var area = panel.querySelector('[data-prompt]');
+    if(copyBtn && area){
+      copyBtn.addEventListener('click', function(){
+        var done = function(){
+          var old = copyBtn.textContent;
+          copyBtn.textContent = 'Copied';
+          setTimeout(function(){ copyBtn.textContent = old; }, 1600);
+        };
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(area.value).then(done, function(){ area.select(); document.execCommand('copy'); done(); });
+        } else { area.select(); document.execCommand('copy'); done(); }
+      });
+    }
+  });
+
+  renderMarks();
+})();
+</script>
+</body>
+</html>
